@@ -1,0 +1,538 @@
+a{
+	text-decoration: none;
+	color: #000;
+}
+input{
+	-webkit-appearance: none !important;
+	outline:none !important;
+	border-radius: 0 !important;
+}
+.weui-grid{
+	padding: 10px 15px !important;
+}
+.weui-grid__label{
+	margin: 0 !important;
+}
+.weui-panel{
+	margin-top: 0 !important;
+}
+.weui-panel__hd{
+	font-size: 0.93rem !important;
+	padding: 10px 15px 10px !important;
+}
+.weui-cell__bd{
+	font-size: 0.93rem !important;
+	
+}
+.weui-media-box{
+	padding:10px !important;
+}
+.weui-media-box__title{
+	font-weight: bold !important;
+	margin:0 !important;
+	font-size: 1.1rem !important;
+}
+.weui-media-box__desc{
+	font-size: 0.75rem !important;
+	margin:3px 0 !important;
+}
+.weui-media-box__desc p{
+	padding: 0 !important;
+	margin: 0 !important;
+}
+.weui-media-box__price-btn{
+	line-height: 30px;
+}
+.weui-media-box__price{
+	color: red;
+	font-size:1.1rem;
+	float: left;
+	line-height: 1.6rem;
+}
+.weui-media-box__btn{
+	font-size: 0.8rem;
+	float: right;
+	background-color: #ff563c;
+	border: none;
+	color: #fff;
+	border-radius: 3px;
+	height: 30px;
+	width: 65px;
+}
+.clearfix{
+	clear: both;
+}
+.vux-swiper-desc{
+	font-size: 1rem !important;
+}
+.vux-header{
+	background-color: #ff563c !important;
+}
+.vux-header-title{
+	line-height: 2.5rem !important;
+	height: 2.5rem !important;
+	font-size: 1.07rem !important;
+}
+.left-arrow:{
+	height: 1.5rem !important;
+	width: 1.5rem !important;
+}
+.vux-header .vux-header-left .left-arrow:before{
+	height: 0.71rem !important;
+	width: 0.71rem !important;
+	top:0.5rem !important;
+	border: 2px solid #fff !important;
+	border-width: 2px 0 0 2px !important;
+}
+.own-cart__bottom{
+	width: 100%;
+	height: 3rem;
+	background-color: rgba(0,0,0,0.8);
+	position: fixed;
+	bottom: 0;
+	color: #fff;
+	line-height: 3rem;
+	padding: 0 10px;
+}
+.own-cart__sunfee{
+	font-style: normal;
+}
+.own-cart__btn{
+	font-size: 0.8rem;
+	background-color: #ff563c;
+	border: none;
+	color: #fff;
+	border-radius: 3px;
+	height: 2rem;
+	width: 4.5rem;
+	position: absolute;
+	right: 30px;
+	top:0.5rem;
+}
+.own-header__search{
+	height: 2.5rem;
+	background-color: #FF563C;
+}
+.own-header__search > .own-header__search__input{
+	height: 1.8rem;
+	width: 65%;
+	line-height: 1.8rem;
+	font-size: 0.875rem;
+	border: none;
+	border-radius: 0.9rem;
+	position: absolute;
+	top: 0.33rem;
+	left: 5%;
+	padding: 0 10px;
+	color: #999999;
+	text-align: center;
+}
+.own-header__search > .iconfont{
+	color: #fff;
+	font-size: 1.2rem;
+	font-weight: bold;
+	position: absolute;
+	top: 0.65rem;
+}
+.own-header__search > .icon-saoyisao{
+	right: 20%;
+}
+.own-header__search > .icon-fancai{
+	font-size: 1.2rem;
+	right: 3%;
+	font-weight: 100;
+	top: 0.65rem;
+}
+.own-header__search > .icon-gerenzhongxin{
+	font-size: 1.3rem;
+	right: 11.5%;
+	font-weight: 100;
+	top: 0.6rem;
+}
+.own-header__search>.own-header__search__badge{
+	display:none;
+	height: 0.9rem;
+	width: 0.9rem;
+	border-radius: 50%;
+	background-color: rgb(60,197,31);
+	position: absolute;
+	top: 0.3rem;
+	right: 2%;
+	color: #fff;
+	font-size:0.7rem;
+	line-height:0.8rem;
+	text-align: center;
+}
+.own-cart__dot{
+	width: 20px;
+	height: 20px;
+	border-radius: 50%;
+	background-color: #FF563C;
+	display:none; 
+	position: fixed;
+	top: 0;
+	left: 0;
+	z-index: 99;
+}
+.own-pc__avatarbox{
+	height: 7rem;
+	width: 100%;
+	background-color: #FF563C;
+	position: relative;
+}
+.own-pc__avatarbox > .own-pc__portrait{
+	width: 4rem;
+	height: 4rem;
+	border-radius: 50%;
+	background-color: #fff;
+	position: absolute;
+	top:1.5rem;
+	left: 1rem;
+	text-align: center;
+	line-height: 4rem;
+}
+.own-pc__avatarbox > .own-pc__portrait > .icon-gerenzhongxin{
+	font-size: 3.2rem;
+	color: #E1E1E1;
+}
+.own-pc__avatarbox > .own-pc__name{
+	height: 2rem;
+	width: 50%;
+	position: absolute;
+	left: 30%;
+	top: 2.5rem;
+	color: #fff;
+	font-size: 1.1rem;
+	line-height: 2rem;
+}
+.vux-cell-primary > p{
+	margin: 0 !important;
+}
+.vux-cell-primary .vux-label{
+	font-size: 1rem;
+}
+.own-login__form{
+	width: 100%;
+	margin-top: 10px;
+	background-color: #fff;
+	border-bottom: 1px solid #eee;
+	position: relative;
+}
+.own-login__form > input{
+	height: 2.5rem;
+	border:none;
+	border-top: 1px solid #eee;
+	width: 100%;
+	text-align: left;
+	padding: 0.6rem 10px;
+	font-size: 1rem;
+	line-height: 1.3rem;
+	box-sizing: border-box;
+	outline: none;
+}
+.own-login__form>button{
+	height: 1.8rem;
+	width: auto;
+	padding:0 10px;
+	line-height: 1.8rem;
+	font-size: 0.875rem;
+	background-color: #ccc;
+	color: #fff;
+	border: none;
+	position: absolute;
+	right: 3%;
+	top: 0.4rem;
+	border-radius: 3px;
+}
+.own-login__tip{
+	width: 100%;
+	padding: 0 10px;
+	font-size: 0.75rem;
+	color: #999;
+	margin-bottom: 0;
+	box-sizing: border-box;
+}
+.own-login__btn{
+	width: 90%;
+	margin-left: 5%;
+	height: 2.5rem;
+	text-align: center;
+	background-color: #FF563C;
+	border: none;
+	border-radius: 3px;
+	font-size: 1rem;
+	color: #fff;
+	margin-top: 20px;
+}
+.own-login__switch{
+	position: absolute;
+	height: 2rem;
+	line-height: 2rem;
+	font-size: 0.8rem;
+	border: none;
+	color: #fff;
+	top: 0.5rem;
+	right: 3%;
+	background-color: transparent;
+}
+.vux-x-input{
+	font-size: 0.875rem !important;
+}
+.own-checker__box{
+	position: relative;
+	height: 40px;
+	line-height: 40px;
+	padding: 0 0 0 15px;
+	border-bottom: 1px solid #e9e9e9;
+}
+.own-checker__box > .own-checker__inner{
+	border-top: 1px solid #e9e9e9;
+}
+.own-checker__box> .own-checker__inner>span{
+	font-size: 0.875rem;
+}
+.vux-checker-box{
+	width: 60% !important;
+	position: absolute !important; 
+	height: 2rem;
+	top: 0;
+	right: 10%;
+}
+.vux-checker-item{
+	margin-right: 20px;
+}
+.weui-input{
+	color: #FF563C !important;
+}
+.weui-textarea{
+	color: #FF563C !important;
+}
+.vux-table{
+	line-height: 2rem !important;
+	font-size: 0.875rem !important;
+}
+.demo2-item {
+  width: 1.6rem;
+  height: 1.6rem;
+  border: 2px solid #ccc;
+  display: inline-block;
+  border-radius: 50%;
+  line-height: 1.2rem;
+  text-align: center;
+  font-size: 0.75rem;
+  box-sizing: border-box;
+}
+.demo2-item-selected {
+  border-color: #FF563C;
+  background-color: #FF563C;
+  color: #fff;
+}
+.own-login__gestrue{
+	color: #FF563C;
+	font-size: 0.75rem;
+}
+.box{
+	position: relative;
+}
+.vux-checker-box{
+	position: relative !important;
+	width: 100% !important;
+	right: inherit !important;
+}
+.own-scan__dishCard{
+	width: 70%;
+	height: auto;
+	position: absolute;
+	left: 15%;
+	top: 15%;
+	border-radius:5px;
+	background-color: #fff;
+	box-shadow: 1px 1px 10px 2px #aaaaaa;
+}
+.own-scan__dishCard>img{
+	width: 100%;
+}
+.own-scan__dishCard>.own-scan__desc{
+	padding: 0 10px;
+	color: #999999;
+	font-size: 0.75rem;
+	line-height: 1.2;
+	width: 100%;
+	word-wrap: break-word;
+	box-sizing: border-box;
+	margin: 5px;
+}
+.own-scan__dishCard>.own-scan__desc>p{
+	padding: 0;
+	margin: 0;
+}
+.own-pv__img{
+	width: 100%;
+}
+.own-pv__namediv{
+	width: 100%;
+	padding: 0 10px 10px 10px;
+	box-sizing: border-box;
+	background-color: #fff;
+}
+.own-pv__namediv>.name{
+	font-size: 1rem;
+	font-weight: bold;
+	height: 2rem;
+	line-height: 2rem;
+}
+.own-pv__namediv>.pricediv{
+	font-size: 0.875rem;
+	height: 2rem;
+	line-height: 2rem;
+	box-sizing: border-box;
+}
+.own-pv__namediv>.pricediv>.price{
+	color: red;
+	float: left;
+	font-size: 1rem;
+}
+.own-pv__namediv>.pricediv>.btn{
+	float: right;
+}
+.own-pv__desc{
+	position: absolute;
+	bottom: 3px;
+	padding: 0 10px;
+	box-sizing: border-box;
+	font-size: 0.75rem;
+	color: #fff;
+	background-color: rgba(0,0,0,0.3);
+	width: 100%;
+}
+.own-pv__evaluatediv{
+	margin-top: 10px;
+	background-color: #fff;
+	padding: 0 10px 10px 10px;
+}
+.own-pv__evaluatediv>.title{
+	height: 2.5rem;
+	font-size: 1rem;
+	font-weight: bold;
+	line-height: 2.5rem;
+	border-bottom: 1px solid #ECECEC;
+}
+.own-pv__evaluatediv>.evaluatediv{
+	padding: 10px 0;
+	border-bottom: 1px solid #ECECEC;
+}
+.own-pv__evaluatediv>.evaluatediv>.namediv>.name{
+	font-size: 0.8rem;
+}
+.own-pv__evaluatediv>.evaluatediv>.namediv>.date{
+	font-size: 0.75rem;
+	color: #888;
+	margin-left: 10px;
+}
+.own-pv__evaluatediv>.evaluatediv>.contentdiv{
+	padding: 10px;
+	font-size: 0.8rem;
+}
+.own-pv__imgdiv{
+	position: relative;
+}
+.own-pv__imgdiv .icon-fanhui{
+	color: rgba(0,0,0,0.6);
+	font-size: 1.5rem;
+	position: absolute;
+	top: 0.5rem;
+	left: 0.5rem;
+}
+.own-pv__imgdiv .icon-fancai{
+	color: rgba(0,0,0,0.6);
+	font-size: 1.45rem;
+	position: absolute;
+	top: 0.5rem;
+	right: 0.5rem;
+}
+.own-order__feediv{
+	background-color: #fff;
+	line-height: 1.4rem;
+	border-bottom: 1px solid #ECECEC;
+}
+.own-order__feediv .title{
+	font-size: 0.875rem;
+	float: left;
+}
+.own-order__feediv .fee{
+	font-size: 0.875rem;
+	float: right;
+}
+.own-order__content{
+	font-size: 0.875rem;
+	padding: 10px;
+}
+.own-order__btn{
+	border-top: 1px solid #ECECEC;
+}
+.own-ev__title{
+	padding: 0 10px;
+	background-color: #fff;
+	height: 3rem;
+	line-height: 3rem;
+	font-size: 0.875rem;
+}
+.own-ev__evcard{
+	padding: 10px;
+	background-color: #fff;
+}
+.own-ev__evcard>.name{
+	padding:0 0 10px 0;
+	font-size: 0.875rem;
+	font-weight: bold;
+}
+.own-recharge__input{
+	margin-top: 20px;
+	border:none;
+	border-bottom: 1px solid #FF563C;
+	background-color: transparent;
+	height: 2rem;
+	line-height: 1rem;
+	width: 84%;
+	margin-left: 8%;
+	text-align: center;
+	font-size: 0.875rem;
+	color: #FF563C;
+	border-radius: 0;
+}
+.weui-toast.weui-toast_forbidden{
+	color: #fcfcfc !important;
+}
+.weui-toast_forbidden .weui-icon_toast.weui-icon-success-no-circle:before{
+	color: #fcfcfc !important;
+}
+.own-cp__wrapper{
+	padding: 10px;
+	width: 94%;
+	margin-left: 3%;
+	box-sizing: border-box;
+	background-color: #fff;
+	margin-top: 10px;
+	box-shadow: 1px 1px 2px 1px #ccc;;
+}
+.own-cp__wrapper .fee{
+	width: 27%;
+	float: left;
+	height: 4.5rem;
+}
+.own-cp__wrapper .desc{
+	width: 73%;
+	float: left;
+	height: 4.5rem;
+	padding-left: 10px;
+	box-sizing: border-box;
+}
+.own-moneysmbol{
+	font-size: 0.75rem;
+	font-style: normal;
+	color: #FF563C;
+	margin-right: 0px;
+}
+.own-moneysmbol:after{
+	content: '￥';
+}
