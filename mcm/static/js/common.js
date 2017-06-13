@@ -1,6 +1,6 @@
 //const host = 'http://localhost:8085/car/a';
-const host = 'http://192.168.0.109:8085/car/a';
-//var host = '/catering/a';
+//const host = 'http://192.168.0.109:8085/car/a';
+var host = '/catering/a';
 //var host = 'http://www.autoservicewx.com/catering/a';
 var imgHost = 'http://124.232.137.107:6660';
 

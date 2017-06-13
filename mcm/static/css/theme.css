@@ -5,7 +5,7 @@ a{
 input{
 	-webkit-appearance: none !important;
 	outline:none !important;
-	border-radius: 0 !important;
+	border-radius: 0;
 }
 .weui-grid{
 	padding: 10px 15px !important;
