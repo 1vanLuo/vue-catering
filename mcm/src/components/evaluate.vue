@@ -53,6 +53,7 @@ export default{
 				eva.productReleaseId = ol.productReleaseId;
 				eva.productId = ol.product.id;
 				eva.quality = ol.score;
+				eva.service = ol.score;
 				eva.content = ol.eva;
 				evas.push(eva);
 			}
@@ -61,9 +62,26 @@ export default{
 			   text: '正在提交评价'
 			});
 			let _this = this;
-			setTimeout(function(){
-				_this.$vux.loading.hide()
-			},3000)
+			this.$http.post(this.COM.urls.saveEvaluate,this.COM.postOpt).then(
+				function(res){
+					let rejo = res.body;
+					this.$vux.loading.hide();
+					this.$vux.alert.show({
+				        title: '提示',
+				        content: rejo.msg,
+				        onShow () {
+				        },
+				        onHide () {
+				          if(rejo.code > 0){
+				          	this.$router.push('/orderView')
+				          }
+				        }
+				    });
+				},
+				function(res){
+					this.COM.errorCallBack(res,this.$vux);
+				}
+			)
 		}
 	}
 }

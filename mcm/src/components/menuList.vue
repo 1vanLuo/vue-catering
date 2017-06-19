@@ -105,14 +105,14 @@ export default{
 	created(){
 		let gId = this.$route.query.groupId || 0;
 		let url = this.COM.urls.product;
-		this.$http.post(url,{pageNo:1,groupId:gId},{responseType:'json',emulateJSON:true}).then(
+		this.$http.post(url,{pageNo:1,groupId:gId},this.COM.postOpt).then(
 			function(response){
-        	this.list = response.body;
+        	this.list = JSON.parse(response.body);
         	for(let i of this.list){
         		i.img = this.COM.imgHost + i.img;
         	}
-	    },function(response){
-	        console.info(response);
+	    },function(res){
+	        this.COM.errorCallBack(res,this.$vux);
 	    }
     )
 	},

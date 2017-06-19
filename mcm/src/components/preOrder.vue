@@ -37,7 +37,7 @@
 			          <tr v-for="ol in orderList">
 			            <td>{{ol.name}}</td>
 			            <td>&yen;{{ol.price}}</td>
-			            <td>x {{ol.value}}</td>
+			            <td>x {{ol.num}}</td>
 			          </tr>
 			        </tbody>
 			      </x-table>
@@ -116,16 +116,16 @@ export default{
 			  let _this = this;
 			  setTimeout(function(){
 				_this.$vux.loading.hide();
-				_this.$vux.toast.show({
-		          text: '已提交',
-		          onShow () {
-		          },
-		          onHide () {
-		          	_this.$router.push('/home');
-		          	window.sessionStorage.removeItem('cart');
-		          }
-		        })
-			  },3000)
+				_this.$vux.confirm.show({
+				  title:'支付确认',
+				  content:'您的订单已提交，是否立即支付？',
+				  confirmText:'是',
+				  cancelText:'否',
+				  onCancel () {
+				  },
+				  onConfirm () {}
+				})
+			  },1000)
 		}
 	}
 }

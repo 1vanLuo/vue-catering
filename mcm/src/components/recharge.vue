@@ -22,6 +22,9 @@ import Divider from 'vux/src/components/divider'
 import {Checker,CheckerItem} from 'vux/src/components/checker'
 import {TransferDomDirective as TransferDom} from 'vux/src/directives/transfer-dom/index.js'
 
+import wx from 'weixin-js-sdk'
+import jQ from 'jquery'
+
 export default{
 	directives: {
 	    TransferDom
@@ -53,41 +56,104 @@ export default{
 	},
 	methods:{
 		recharge(){
-		   if(this.fee > 0){
-		   	  let content = '为手机号'+this.phone+'充值'+this.fee+'元';
-		   	  let _this = this;
-		   	  this.$vux.confirm.show({
-		        title: '会员充值',
-		        content: content,
-		        onShow () {
-		          console.log('plugin show')
-		        },
-		        onHide () {
-		          console.log('plugin hide')
-		        },
-		        onCancel () {
-		          console.log('plugin cancel')
-		        },
-		        onConfirm () {
-					_this.$vux.loading.show({
-					   text: '正在为您充值'
-					});
-					setTimeout(function(){
-						_this.$vux.loading.hide()
-					},3000)
-		        }
-		      })
+		   let isLogin = this.COM.cookie.get('isLogin');
+		   let _this = this;
+		   if(isLogin){
+		   		this.phone = this.COM.cookie.get('phone');
+		   		if(this.fee > 0){
+			   	  let content = '为手机号'+this.phone+'的会员充值'+this.fee+'元';
+			   	  this.$vux.confirm.show({
+			        title: '会员充值',
+			        content: content,
+			        onShow () {
+			          console.log('plugin show')
+			        },
+			        onHide () {
+			          console.log('plugin hide')
+			        },
+			        onCancel () {
+			          console.log('plugin cancel')
+			        },
+			        onConfirm () {
+						_this.$vux.loading.show({
+						   text: '正在为您充值'
+						});
+						jQ.ajax({
+							url:_this.COM.urls.recharge,
+							data:{'fee':_this.fee},
+							type:'post',
+							success:function(res){
+								_this.$vux.loading.hide();
+								/*_this.$vux.alert.show({
+									content:res.msg,
+									onHide(){
+										if(res.code > 0){
+											_this.$router.push('/home');
+										}
+									}
+								})*/
+								if(res.code > 0){
+									let jo = res.data;
+									wx.config({
+										debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+										appId: jo.appId, // 必填，公众号的唯一标识
+										timestamp: jo.timestamp, // 必填，生成签名的时间戳
+										nonceStr: jo.nonceStr, // 必填，生成签名的随机串
+										signature: jo.signature,// 必填，签名
+										jsApiList: ['chooseWXPay']
+									});
+									wx.ready(function () {
+										// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后
+										wx.chooseWXPay({
+											timestamp: jo.timestamp, // 支付签名时间戳 注意这里的s 文档新版大写 但是我的小写才好使
+											nonceStr: jo.nonceStr, // 支付签名随机串
+											package: 'prepay_id='+jo.prepay_id, // 统一支付接口返回的package包
+											signType: "MD5", // 签名方式，'MD5'
+											paySign: jo.paySign, // 支付签名
+											success: function (res) {
+												if(res.errMsg == "chooseWXPay:ok" ) {
+													//alert("你点击了确认");
+													_this.$router.push('/home')
+												} else {
+							
+												}
+											},
+											cancel:function(res){
+											}
+										});
+									});
+								}else{
+									_this.$vux.alert.show({
+										content:res.msg
+									})
+								}
+							},
+							error:function(res){
+								_this.COM.errorCallBack(res,_this.$vux);
+							}
+						})
+			        }
+			      })
+			   }else{
+			   	    this.$vux.toast.show({
+			          text: '请选择或输入充值金额',
+			          type: 'warn',
+			          onShow () {
+			          },
+			          onHide () {
+			          }
+			        })
+			   }
 		   }else{
-		   		let _this = this;
-		   	    this.$vux.toast.show({
-		          text: '请选择或输入充值金额',
-		          type: 'warn',
-		          onShow () {
-		          },
-		          onHide () {
-		          }
-		        })
+		   		this.$vux.alert.show({
+		   			title:'提示',
+		   			content:'您似乎还没有登录，登陆之后再回来吧！',
+		   			onHide(){
+		   				_this.$router.push('/loginPassword');
+		   			}
+		   		})
 		   }
+		   
 		}
 	}
 }

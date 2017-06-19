@@ -1,3 +1,7 @@
+body {
+  background-color: #F9F9F9;
+  margin: 0;
+}
 a{
 	text-decoration: none;
 	color: #000;
@@ -204,6 +208,9 @@ input{
 	color: #fff;
 	font-size: 1.1rem;
 	line-height: 2rem;
+	text-overflow: ellipsis;
+	white-space: nowrap; 
+	overflow: hidden;
 }
 .vux-cell-primary > p{
 	margin: 0 !important;
@@ -329,7 +336,7 @@ input{
 }
 .own-login__gestrue{
 	color: #FF563C;
-	font-size: 0.75rem;
+	font-size: 12px;
 }
 .box{
 	position: relative;
@@ -502,9 +509,15 @@ input{
 }
 .weui-toast.weui-toast_forbidden{
 	color: #fcfcfc !important;
+	width: 10em !important;
+	padding: 0 10px !important;
 }
 .weui-toast_forbidden .weui-icon_toast.weui-icon-success-no-circle:before{
 	color: #fcfcfc !important;
+}
+.weui-toast_success{
+	width: 10em !important;
+	padding: 0 10px !important;
 }
 .own-cp__wrapper{
 	padding: 10px;
@@ -535,4 +548,63 @@ input{
 }
 .own-moneysmbol:after{
 	content: '￥';
+}
+.own-nosymbol{
+	font-size: 1rem;
+	font-style: normal;
+	color: #fff;
+	margin-right: 10px;
+	letter-spacing: normal;
+}
+.own-nosymbol:after{
+	content: 'No.';
+}
+.own-vipcard__div{
+	width: 100%;
+	background: #0077ff;
+	margin-bottom: 10px;
+	box-sizing: border-box;
+	border-radius: 4px;
+	box-shadow: 1px 1px 3px 1px #bbb;
+	padding: 10px;
+}
+.own-vipcard__div .own-vipcard__com{
+	font-size: 0.875rem;
+	color: #fff;
+	box-sizing: border-box;
+	line-height: 1.2rem;
+	float: left;
+}
+.own-vipcard__div .own-vipcard__type{
+	font-size: 0.875rem;
+	color: #fff;
+	box-sizing: border-box;
+	line-height: 1.2rem;
+	float: right;
+}
+.own-vipcard__div .own-vipcard__no{
+	font-size: 1.8rem;
+	line-height: 4rem;
+	font-weight: bold;
+	color: #fff;
+	box-sizing: border-box;
+	text-align: center;
+	width: 100%;
+	letter-spacing: 3px;
+}
+.own-vipcard__div .own-vipcard__fee{
+	font-size: 0.87rem;
+	line-height: 1rem;
+	color: #fff;
+	box-sizing: border-box;
+	width: 100%;
+	border-top: 1px solid #fff;
+	padding-top: 10px;
+}
+.own-data_none{
+	text-align: center;
+	width: 100%;
+	color: #aaa;
+	font-size: 0.75rem;
+	line-height: 2rem;
 }

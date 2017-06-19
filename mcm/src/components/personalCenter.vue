@@ -1,8 +1,8 @@
 <template>
 	<div>
-		<x-header :left-options="{backText: ''}" ref="hb">个人中心</x-header>
+		<x-header :left-options="{backText: '',preventGoBack:true}" v-on:on-click-back="goBack" ref="hb">个人中心</x-header>
 		<div class="own-pc__avatarbox" ref="avt">
-			<div class="own-pc__portrait">
+			<div class="own-pc__portrait" ref="head">
 				<i class="iconfont icon-gerenzhongxin"></i>
 			</div>
 			<div class="own-pc__name" @click.prevent="isLogin()">{{userName}}</div>
@@ -15,7 +15,7 @@
 		      <cell title="我的优惠券" is-link link="/coupons">
 		      	<i slot="icon" class="iconfont icon-youhuiquan1" style="display:block;margin-right:5px;font-size: 1.2rem;color:#ffc636"></i>
 		      </cell>
-		      <cell title="会员信息" is-link>
+		      <cell title="会员卡信息" is-link link="/vipCards">
 		      	<i slot="icon" class="iconfont icon-huiyuanxinxi" style="display:block;margin-right:5px;font-size: 1.2rem;color:#c568f5"></i>
 		      </cell>
 		      <cell title="会员充值" is-link link="/recharge">
@@ -50,12 +50,33 @@ export default{
 	},
 	data(){
 		return{
-			userName:'登录/注册           >'
+			userName:'登录/注册           >',
+			isLogined:false
 		}
 	},
 	created(){
+		let islogin = this.COM.cookie.get('isLogin') || false;
+		this.isLogined = islogin;
+		console.log(islogin)
+		if(islogin){
+			let _userName = this.COM.cookie.get('nickName');
+			this.userName = unescape(_userName);
+			this.isLogin = function(){
+				
+			}
+		}else{
+			this.userName = '登录/注册           >';
+			this.isLogin = function(){
+				this.$router.push({path:'/loginPassword'});
+			}
+		}
 	},
 	mounted(){
+		console.log(this.isLogined)
+		if(this.isLogined){
+			let headImg = this.COM.cookie.get('headImg');
+			this.$refs.head.innerHTML = '<img src="'+unescape(headImg)+'" width="100%">';
+		}
 		this.$nextTick(() => {
 			let pcScroller = this.$refs.pcScroller;
 			let hbHeight = this.$refs.hb.$el.offsetHeight;
@@ -70,10 +91,13 @@ export default{
 	      this.scrollTop = pos.top
 	   },
 	   isLogin(){
-	   	  this.$router.push({path:'/loginCaptcha'});
+	   	  
 	   },
 	   toCharge(){
 	   	  this.$router.push({path:'/recharge'});
+	   },
+	   goBack(){
+	   	  this.$router.push({path:'/home'});
 	   }
 	}
 }

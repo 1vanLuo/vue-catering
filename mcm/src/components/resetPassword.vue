@@ -13,6 +13,8 @@
 <script>
 import XHeader from 'vux/src/components/x-header'
 
+import jQ from 'jquery'
+
 export default{
 	components:{
 		XHeader
@@ -26,7 +28,43 @@ export default{
 	},
 	methods:{
 		saveNewPwd(){
-			
+			if(this.COM.trimStr(this.oPwd) == '' || this.COM.trimStr(this.nPwd) == '' || this.COM.trimStr(this.rPwd) == ''){
+				this.$vux.toast.show({
+					type:'warn',
+					text:'您输入的信息不完整，请认真填写！'
+				})
+				return
+			}
+			if(this.nPwd != this.rPwd){
+				this.$vux.toast.show({
+					type:'warn',
+					text:'您两次输入的新密码不一致'
+				})
+				return
+			}
+			let _this = this;
+			_this.$vux.loading.show({
+				text:'正在处理'
+			})
+			jQ.ajax({
+				url: _this.COM.urls.updatePass,
+				type:'post',
+				data:{'newpwd':_this.nPwd,'oldpwd':_this.oPwd},
+				success:function(res){
+					_this.$vux.loading.hide()
+					_this.$vux.alert.show({
+						content:res.msg,
+						onHide(){
+							if(res.code > 0){
+								_this.$router.push('/setting');
+							}
+						}
+					})
+				},
+				error:function(res){
+					_this.COM.errorCallBack(res,_this.$vux);
+				}
+			})
 		}
 	}
 }

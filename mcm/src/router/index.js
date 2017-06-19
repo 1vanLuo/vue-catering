@@ -18,11 +18,15 @@ import Setting from '../components/setting.vue'
 import Coupons from '../components/coupons.vue'
 import ResetPassword from '../components/resetPassword.vue'
 import SetGesture from '../components/setGesture.vue'
+import VipCards from '../components/vipCards.vue'
+import Profile from '../components/profile.vue'
+import ForgetPassword from '../components/forgetPassword.vue'
+import VipCardList from '../components/vipCardList.vue'
 
 Vue.use(Router)
 
 export default new Router({
-	mode:'hash',
+  mode:'hash',
   routes: [
     {
       path: '/home',
@@ -113,6 +117,26 @@ export default new Router({
     	path:'/setGesture',
     	name:'setGesture',
     	component: SetGesture
+    },
+    {
+    	path:'/vipCards',
+    	name:'vipCards',
+    	component: VipCards
+    },
+    {
+    	path:'/profile',
+    	name:'profile',
+    	component: Profile
+    },
+    {
+    	path:'/forgetPassword',
+    	name:'forgetPassword',
+    	component: ForgetPassword
+    },
+    {
+    	path:'/vipCardList',
+    	name:'vipCardList',
+    	component: VipCardList
     }
   ]
 })

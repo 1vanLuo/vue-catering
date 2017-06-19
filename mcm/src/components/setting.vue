@@ -9,7 +9,7 @@
 		      <cell title="设置手势密码" is-link link="/setGesture">
 		      	<i slot="icon" class="iconfont icon-shoushimima" style="display:block;margin-right:5px;font-size: 1.2rem;color:#ffc636"></i>
 		      </cell>
-		      <cell title="个人信息" is-link>
+		      <cell title="个人信息" is-link link="/profile">
 		      	<i slot="icon" class="iconfont icon-gerenxinxi" style="display:block;margin-right:5px;font-size: 1.2rem;color:#3cc51f"></i>
 		      </cell>
 		    </group>

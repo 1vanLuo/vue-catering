@@ -33,6 +33,8 @@
 <script>
 import XHeader from 'vux/src/components/x-header'
 
+import jQ from 'jquery'
+
 export default{
 	components:{
 	},
@@ -68,12 +70,13 @@ export default{
 	},
 	created(){
 		let id = this.$route.query.id;
-		this.$http.post(this.COM.urls.productDetail,{'pId':id},{responseType:'json',emulateJSON:true}).then(
+		this.$http.post(this.COM.urls.productDetail,{'pId':id},this.COM.postOpt).then(
 			function(response){
-		        this.product = response.body;
+		        this.product = JSON.parse(response.bodyText);
 		        this.product.img = this.COM.imgHost + this.product.img;
-		    },function(response){
-		        console.info(response);
+		        this.product.num = 1;
+		    },function(res){
+		        this.COM.errorCallBack(res,this.$vux);
 		    }
 	    )
 	},
@@ -83,7 +86,7 @@ export default{
 		this.cart = cart;
 		let ct = 0;
 		for(let i of this.cart){
-			ct += i.value;
+			ct += i.num;
 		}
 		this.count = ct;
 		if(this.count > 0){
@@ -92,9 +95,59 @@ export default{
 			this.$refs.bage.style.display = 'none';
 		}
 	},
+	watch:{
+	},
 	methods:{
-		addToCart(){
-		  	let el = event.currentTarget;
+		cartSave(c){
+			let _this = this;
+	  		let para = {};
+	 	  	let pr = {};
+	 	  	pr.id = c.id;
+	 	  	para.productRelease = pr;
+	 	  	if(c.hasOwnProperty('cartId')){
+	 	  		para.cartId = c.cartId;
+	 	  	}
+	 	  	para.num = c.num;
+	 	  	jQ.ajax({
+	 	  		url:_this.COM.urls.cartSave,
+	 	  		type:'post',
+	 	  		data:{'cart':para},
+	 	  		success:function(res){
+ 	  				let cartId = res.data.id;
+ 	  				let f = false;
+ 	  				for(let i of _this.cart){
+			  			if(i.cartId === cartId){
+			  				++i.num;
+			  				_this.cart.splice(index,1,i);
+			  				f = true;
+			  				break;
+			  			}
+			  		}
+ 	  				if(!f){
+ 	  					c.cartId = cartId;
+ 	  					_this.cart.splice(len,0,c);
+ 	  				}
+ 	  				
+ 	  				let ct = 0;
+			  		for(let i of _this.cart){
+			  			ct += i.num;
+			  		}
+			  		_this.count = ct;
+			  		if(_this.count > 0){
+			  			_this.$refs.bage.style.display = 'block';
+			  		}else{
+			  			_this.$refs.bage.style.display = 'none';
+			  		}
+			  		console.log('=====this.cart=======')
+			  		console.log(_this.cart);
+			  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
+	 	  		},
+	 	  		error:function(res){
+	 	  			_this.COM.errorCallBack(res,_this.$vux);
+	 	  		}
+	 	  	});
+	  	},
+	  	showDot(el){
 		  	let fromY = el.getBoundingClientRect().top;
 		  	let fromX = el.getBoundingClientRect().left + 10;
 		  	let dc = this.$refs.dc;
@@ -120,22 +173,38 @@ export default{
 	  				clearInterval(flag);
 	  			}
 	  		},6);
-	  		let item = this.product;
-	  		item.value = 1;
-	  		item.sum = this.product.price;
-	  		this.cart.push(item);
-	  		let c = 0;
-	  		for(let i of this.cart){
-	  			c += i.value;
+	  },
+		addToCart(){
+			let item = this.product;
+		  	let index = 0;
+		  	let flag = false;
+		  	let len = this.cart.length;
+		  	let _cart = this.cart;
+		  	let _c = {};
+		  	for(let index=0; index<len; index++){
+		  		console.log(index);
+		  		let c = _cart[index];
+		  		if(c.id === item.id){
+		  			let num = c.num + 1;
+		  			_c.cartId = c.cartId;
+		  			_c.id = c.id;
+		  			_c.num = num;
+		  			_c.desc = c.desc;
+		  			_c.img = c.img;
+		  			_c.name = c.name;
+		  			flag = true;
+		  			break;
+		  		}
 	  		}
-	  		this.count = c;
-	  		if(this.count > 0){
-	  			this.$refs.bage.style.display = 'block';
-	  		}else{
-	  			this.$refs.bage.style.display = 'none';
-	  		}
-	  		console.log(this.cart);
-	  		sessionStorage.setItem('cart',JSON.stringify(this.cart));
+		  	if(!flag){
+	  			_c.id = item.id;
+	  			_c.num = item.num;
+	  			_c.img = item.img;
+	  			_c.desc = item.desc;
+	  			_c.name = item.name;
+		  	}
+	  		this.showDot(event.currentTarget);
+   			this.cartSave(_c);
 	    },
 	    toCart(){
 	  		this.$router.push({path:'/cart'});

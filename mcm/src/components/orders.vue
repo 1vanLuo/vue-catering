@@ -1,7 +1,9 @@
 <template>
 	<div>
 		<x-header :left-options="{backText: ''}" ref="hb">我的订单</x-header>
-		<Scroller lock-x height="-45" @on-scroll="onScroll" ref="orderListScroller">
+		<Scroller lock-x  @on-scroll="onScroll" ref="orderListScroller">
+		  <div style="padding-bottom: 5px;">	
+		  	<div class="own-data_none" ref="dataTip">暂无数据</div>
 			<div v-for="o in orders" style="padding: 10px;background-color: #fff;margin-bottom: 10px;">
 				<div class="own-order__feediv">
 					<div>
@@ -17,6 +19,7 @@
 					<div class="clearfix"></div>
 				</div>
 			</div>
+		 </div>
 		</Scroller>
 	</div>
 </template>
@@ -26,6 +29,8 @@
 import XHeader from 'vux/src/components/x-header'
 import Scroller from 'vux/src/components/scroller'
 
+import jQ from 'jquery'
+
 export default{
 	components: {
 		XHeader,
@@ -33,7 +38,7 @@ export default{
 	},
 	data(){
 		return{
-			orders:[
+			/*orders:[
 				{
 					id:'123424',
 					createDate:'2017-6-11 14:59:55',
@@ -58,8 +63,39 @@ export default{
 						phone:'43543542'
 					}
 				}
-			]
+			]*/
+			orders:[]
 		}
+	},
+	created(){
+		let _this = this;
+		_this.$vux.loading.show({
+			text:'正在加载'
+		})
+		jQ.ajax({
+			url:_this.COM.urls.getOrderList,
+			data:{'pageNo':1},
+			type:'post',
+			success:function(res){
+				_this.$vux.loading.hide();
+				if(res.length > 0){
+					_this.orders = res;
+					_this.$refs.dataTip.style.display = 'none';
+				}
+			},
+			error:function(res){
+				_this.COM.errorCallBack(res,_this.$vux);
+			}
+		})
+	},
+	mounted(){
+		this.$nextTick(() => {
+			let hbHeight = this.$refs.hb.$el.offsetHeight;
+			let sc = this.$refs.orderListScroller
+			let scHeight = window.innerHeight - hbHeight - 5;
+			sc.$el.style.height = scHeight + 'px';
+			sc.reset({top:0})
+		})
 	},
 	methods:{
 		onScroll(pos) {

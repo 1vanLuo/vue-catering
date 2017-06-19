@@ -3,8 +3,8 @@
 		<x-header :left-options="{backText: ''}" ref="headBar">购物车</x-header>
 		<scroller lock-x @on-scroll="onScroll" ref="cartScroller">
 			<div>
-				<panel :list="list" :type="type" v-on:on-click-add="countSum" v-on:on-click-red="countSum"
-					v-on:on-click-del="countSum"></panel>
+				<panel :list="list" :type="type" v-on:on-click-add="addNum" v-on:on-click-red="subNum"
+					v-on:on-click-del="delItem"></panel>
 			</div>
 	    </scroller>
 		<div class="own-cart__bottom" ref="footBar">共<span ref="sumNum">{{sumNum}}</span>道菜&nbsp;&nbsp;
@@ -21,6 +21,8 @@
 	import Panel from 'vux/src/components/panel'
 	import Scroller from 'vux/src/components/scroller'
 	import Icon from 'vux/src/components/icon'
+	
+	import jQ from 'jquery'
 	
 	export default {
 		components: {
@@ -47,7 +49,7 @@
 		},
 		created(){
 			let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-			for(let i=0; i<cart.length; i++){
+			/*for(let i=0; i<cart.length; i++){
 				let item = cart[i];
 				let j = 0;
 				let flag = false;
@@ -63,12 +65,14 @@
 				}else{
 					this.list.push(item);
 				}
-			}
+			}*/
+			console.log(cart)
+			this.list = cart;
 		},
 		mounted: function(){
 			for(let item of this.list) {  
-   				this.sumNum += Number(item.value);
-   				this.sumFee += Number(item.sum);
+   				this.sumNum += Number(item.num);
+   				this.sumFee += Number(item.num*item.price);
 			}
 			
 			this.$nextTick(() => {
@@ -83,9 +87,77 @@
 		updated: function(){
 			
 		},
-		watch: {
+		watch:{
+		  	 list:{
+		  	 	  handler(newVal,oldVal){
+		  	 	  	if(oldVal.length == newVal.length){
+		  	 	  		let flag = true;
+		  	 	  		for(let i=0; i<newVal.length; i++){
+		  	 	  			console.log(newVal[i].value);console.log(oldVal[i].value)
+		  	 	  			if(newVal[i].id != oldVal[i].id || newVal[i].value != oldVal[i].value){
+		  	 	  				flag = false;
+		  	 	  				break;
+		  	 	  			}
+		  	 	  		}
+		  	 	  		if(!flag){
+		  	 	  			this.cartSave(newVal);
+		  	 	  		}
+		  	 	  	}else{
+		  	 	  		this.cartSave(newVal)
+		  	 	  	}
+		  	 	  },
+		  	 	  deep:true
+		  	 }
 		},
 		methods: {
+			cartSave(c){
+				let _this = this;
+				_this.$vux.loading.show({
+					text:'加载中'
+				})
+				let para = {};
+		 	  	let pr = {};
+		 	  	pr.id = c.id;
+		 	  	para.productRelease = pr;
+		 	  	para.num = c.num;
+		 	  	para.cartId = c.cartId;
+		 	  	jQ.ajax({
+		 	  		url:_this.COM.urls.cartSave,
+		 	  		type:'post',
+		 	  		data:{'cart':para},
+		 	  		success:function(res){
+		 	  			_this.$vux.loading.hide();
+		 	  			let cartId = res.data.id;
+	 	  				let f = false;
+	 	  				for(let i of _this.cart){
+				  			if(i.cartId === cartId){
+				  				++i.num;
+				  				_this.cart.splice(index,1,i);
+				  				f = true;
+				  				break;
+				  			}
+				  		}
+	 	  				
+	 	  				let ct = 0;
+				  		for(let i of _this.cart){
+				  			ct += i.num;
+				  		}
+				  		_this.count = ct;
+				  		if(_this.count > 0){
+				  			_this.$refs.bage.style.display = 'block';
+				  		}else{
+				  			_this.$refs.bage.style.display = 'none';
+				  		}
+				  		console.log('=====this.cart=======')
+				  		console.log(_this.cart);
+				  		_this.countSum();
+				  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
+		 	  		},
+		 	  		error:function(res){
+		 	  			_this.COM.errorCallBack(res,_this.$vux);
+		 	  		}
+		 	  	})
+		  	},
 			isEmptyObject(e) {  
 			    var t;  
 			    for (t in e)  
@@ -96,12 +168,33 @@
 		   		let num = 0;
 		   		let fee = 0
 			   	for(let item of this.list) {  
-	   				num += Number(item.value);
-	   				fee += Number(item.sum);
+			   		console.log('----item----')
+			   		console.log(item)
+	   				num += Number(item.num);
+	   				fee += Number(item.num*item.price);
 				}
 			   	this.sumNum = num;
 			   	this.sumFee = fee;
-			   	sessionStorage.setItem('cart',JSON.stringify(this.list));
+		   },
+		   addNum(index){
+		   		let item = this.list[index];
+		   		item.num++;
+		    	item.sum = (item.num * item.price).toFixed(2)
+		    	//this.list.splice(index,1,item);
+		    	//this.countSum();
+		    	this.cartSave(item);
+		   },
+		   subNum(index){
+		   		let item = this.list[index];
+		   		item.num--;
+	    		item.sum = (item.num * item.price).toFixed(2);
+	    		//this.list.splice(index,1,item);
+	    		//this.countSum();
+	    		this.cartSave(item);
+		   },
+		   delItem(index){
+		   		this.list.splice(index,1);
+		   		this.countSum();
 		   },
 		   onScroll(pos) {
 		      this.scrollTop = pos.top

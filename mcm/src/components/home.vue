@@ -32,16 +32,14 @@ import XButton from 'vux/src/components/x-button'
 import XHeader from 'vux/src/components/x-header'
 import Scroller from 'vux/src/components/scroller'
 import wx from 'weixin-js-sdk'
+import jQ from 'jquery'
 const baseList = [{
-  url: 'http://m.baidu.com',
   img: '../../static/images/p2.jpg',
   title: '最新推出'
 }, {
-  url: 'http://m.baidu.com',
   img: '../../static/images/p3.jpg',
   title: '店长推荐'
 }, {
-  url: 'http://m.baidu.com',
   img: '../../static/images/p4.jpg',
   title: '优惠活动'
 }]
@@ -69,77 +67,94 @@ export default {
         desc: '上等黄牛肉',
         price: '30.00',
         btn: '来 一 份'
-      },
-      {
-        src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-        title: '孜然牛肉',
-        desc: '上等黄牛肉',
-        price: '30.00',
-        btn: '来 一 份'
-      },
-      {
-        src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-        title: '红烧牛肉',
-        desc: '上等黄牛肉',
-        price: '20.00',
-        btn: '来 一 份'
-      },
-      {
-        src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-        title: '孜然牛肉',
-        desc: '上等黄牛肉',
-        price: '30.00',
-        btn: '来 一 份'
-      },
-      {
-        src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-        title: '孜然牛肉',
-        desc: '上等黄牛肉',
-        price: '30.00',
-        btn: '来 一 份'
       }],*/
      	list:[],
+     	openId:'',
       footer: {
         title: '查看更多',
         url: '/menuList'
       },
       cart: [],
       count: 0,
-      wxSDK:{}
+      wxSDK:{},
+      arr:[]
     }
   },
-  created:function(){
-  	/*this.$http.post(this.COM.urls.banners,{responseType:'json',emulateJSON:true}).then(
-			function(response){
-        this.banners = response.body;
-        console.log(response)
-	    },function(response){
-	        console.info(response);
+  created(){
+  	let _this = this;
+  	let _openId = _this.COM.testOpenId;
+  	_this.openId = _openId;
+  	jQ.ajax({
+  		url:_this.COM.urls.banners,
+  		type:'post',
+			success:function(response){
+				let jo = response;
+				if(jo.length > 0){
+					this.banners = jo;
+				}
+	    },
+	    error:function(res){
+	       _this.COM.errorCallBack(res,_this.$vux);
 	    }
-    )*/
-		this.$http.post(this.COM.urls.product,{pageNo:1},{responseType:'json',emulateJSON:true}).then(
-			function(response){
-        this.list = response.body;
-        for(let i of this.list){
+    });
+		jQ.ajax({
+			url:_this.COM.urls.product,
+			type:'post',
+			data:{'pageNo':1},
+			success:function(response){
+        _this.list = response;
+        for(let i of _this.list){
         	let src = i.img;
-        	i.img = this.COM.imgHost + src;
+        	i.num = 1;
+        	i.img = _this.COM.imgHost + src;
         }
-	    },function(response){
-	        console.info(response);
+	    },
+	    error:function(res){
+	        _this.COM.errorCallBack(res,t_his.$vux);
 	    }
-    )
-		this.$http.post(this.COM.urls.group,{responseType:'json',emulateJSON:true}).then(
-			function(response){
-        this.groups = response.body;
-	    },function(response){
-	        console.info(response);
+    });
+		jQ.ajax({
+			url:_this.COM.urls.group,
+			type:'post',
+			success:function(response){
+        _this.groups = response.body;
+	    },
+	    error:function(res){
+	      _this.COM.errorCallBack(res,_this.$vux);
 	    }
-    )
+    });
+		jQ.ajax({
+			url:_this.COM.urls.getCarts,
+			type:'post',
+			data:{'openId':_openId},
+			success:function(data){
+				let carts = data.data.carts;
+				let _cart = [];
+				for(let c of carts){
+					let _c = {};
+					_c.cartId = c.id;
+					_c.id = c.productReleaseId;
+					_c.num = c.num;
+					_c.name = c.name;
+					_c.img = c.img;
+					_c.desc = c.desc;
+					_cart.push(_c);
+				}
+				window.sessionStorage.setItem('cart',JSON.stringify(_cart));
+				_this.cart = _cart;
+				_this.count = _cart.length;
+			},
+			error:function(res){
+				_this.COM.errorCallBack(res,_this.$vux);
+			}
+		})
     let url = window.location.href;
-		this.$http.post(this.COM.urls.getWxSdk,{'url':url},{responseType:'json',emulateJSON:true}).then(
-			function(response){
-        this.wxSDK = response.body;
-        let _this = this;
+	  jQ.ajax({
+	  	url:_this.COM.urls.getWxSdk,
+	  	type:'post',
+	  	data:{'url':url},
+			success:function(response){
+        _this.wxSDK = response;
         wx.config({
 				    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
 				    appId: _this.wxSDK.appId, // 必填，公众号的唯一标识
@@ -148,7 +163,7 @@ export default {
 				    signature: _this.wxSDK.signature,// 必填，签名，见附录1
 				    jsApiList: ['scanQRCode','getLocation'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
 				});
-				/*wx.ready(function(){
+				wx.ready(function(){
 					  wx.getLocation({
 							type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
 							success: function (res) {
@@ -164,23 +179,26 @@ export default {
 									}
 							});
 						}
-				})*/
-	    },function(response){
-	        console.info(response);
+				})
+	    },
+	    error:function(res){
+	       _this.COM.errorCallBack(res,_this.$vux);
 	    }
-    );
-		
+    });
+		this.arr = [{num:0}];
   },
   mounted: function(){
-  	let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-		console.log(cart)
-		this.cart = cart;
+  //	let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
+  	console.log('--cart---')
+		console.log(this.cart)
+	//	this.cart = cart;
 		let ct = 0;
 		for(let i of this.cart){
-			ct += i.value;
+			ct += i.num;
 		}
 		this.count = ct;
 		if(this.count > 0){
+			console.log(this.count)
 			this.$refs.bage.style.display = 'block';
 		}else{
 			this.$refs.bage.style.display = 'none';
@@ -195,7 +213,70 @@ export default {
 		  sc.reset({top: 0})
 		});
   },
+  watch:{
+  },
   methods: {
+  	cartSave(c){
+  		//let cartList = [];
+  		/*let _this = this;
+ 	  	for(let c of list){
+ 	  		let item = {};
+ 	  		let productRelease = {};
+ 	  		productRelease.id = c.id;
+ 	  		item.productRelease = productRelease;
+ 	  		item.num = c.num;
+ 	  		cartList.push(item);
+ 	  	}
+ 	  	let _list = {};
+ 	  	_list.list = cartList;*/
+ 	  	let _this = this;
+ 	  	let para = {};
+ 	  	let pr = {};
+ 	  	pr.id = c.id;
+ 	  	para.productRelease = pr;
+ 	  	if(c.hasOwnProperty('cartId')){
+ 	  		para.cartId = c.cartId;
+ 	  	}
+ 	  	para.num = c.num;
+ 	  	jQ.ajax({
+ 	  		url:_this.COM.urls.cartSave,
+ 	  		type:'post',
+ 	  		data:{'cart':para},
+ 	  		success:function(res){
+ 	  			  let cartId = res.data.id;
+ 	  				let f = false;
+ 	  				for(let i of _this.cart){
+			  			if(i.cartId === cartId){
+			  				++i.num;
+			  				_this.cart.splice(index,1,i);
+			  				f = true;
+			  				break;
+			  			}
+			  		}
+ 	  				if(!f){
+ 	  					c.cartId = cartId;
+ 	  					_this.cart.splice(len,0,c);
+ 	  				}
+ 	  				
+ 	  				let ct = 0;
+			  		for(let i of _this.cart){
+			  			ct += i.num;
+			  		}
+			  		_this.count = ct;
+			  		if(_this.count > 0){
+			  			_this.$refs.bage.style.display = 'block';
+			  		}else{
+			  			_this.$refs.bage.style.display = 'none';
+			  		}
+			  		console.log('=====this.cart=======')
+			  		console.log(_this.cart);
+			  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
+ 	  		},
+ 	  		error:function(res){
+ 	  			_this.COM.errorCallBack(res,_this.$vux);
+ 	  		}
+ 	  	});
+  	},
   	isEmptyObject(e) {  
 		    var t;  
 		    for (t in e)  
@@ -206,7 +287,7 @@ export default {
   		this.$router.push({path:'/cart'});
   	},
   	toScanQrcode(){
-  		this.$router.push({path:'/scanQrcode',query:{id:'3413096687977472'}})
+  		//this.$router.push({path:'/scanQrcode',query:{id:'3413096687977472'}})
   	},
   	toPersonalCenter(){
   		this.$router.push({path:'/personalCenter'});
@@ -214,8 +295,7 @@ export default {
   	onScroll(pos) {
       this.scrollTop = pos.top
 	  },
-	  addToCart(item){
-	  	let el = event.currentTarget;
+	  showDot(el){
 	  	let fromY = el.getBoundingClientRect().top;
 	  	let fromX = el.getBoundingClientRect().left + 10;
 	  	let dc = this.$refs.dc;
@@ -241,22 +321,36 @@ export default {
   				clearInterval(flag);
   			}
   		},6);
-  		item.value = 1;
-  		item.sum = item.price;
-  		this.cart.push(item);
-  		let c = 0;
-  		for(let i of this.cart){
-  			c += i.value;
-  		}
-  		this.count = c;
-  		if(this.count > 0){
-  			this.$refs.bage.style.display = 'block';
-  		}else{
-  			this.$refs.bage.style.display = 'none';
-  		}
-  		console.log(this.cart);
-  		sessionStorage.setItem('cart',JSON.stringify(this.cart));
-  		event.stopPropagation()
+	  },
+	  addToCart(item){
+	  	let index = 0;
+	  	let flag = false;
+	  	let len = this.cart.length;
+	  	let _cart = this.cart;
+	  	let _c = {};
+	  	for(let index=0; index<len; index++){
+	  		console.log(index);
+	  		let c = _cart[index];
+	  		if(c.id === item.id){
+	  			let num = c.num + 1;
+	  			_c.cartId = c.cartId;
+	  			_c.id = c.id;
+	  			_c.num = num;
+	  			_c.desc = c.desc;
+	  			_c.img = c.img;
+	  			_c.name = c.name;
+	  			flag = true;
+	  			break;
+	  		}
+	  	}
+	  	if(!flag){
+  			_c.num = item.num;
+  			_c.img = item.img;
+  			_c.desc = item.desc;
+  			_c.name = item.name;
+	  	}
+  		this.showDot(event.currentTarget);
+			this.cartSave(_c);
 	  },
 	  clickGroup(g){
 	  	console.log(g.id)
@@ -266,10 +360,10 @@ export default {
 	  	console.log(this.pName)
 	  	this.$http.post(this.COM.urls.product,{pageNo:1,pName:this.pName},{emulateJSON:true,responseType:'json'}).then(
 				function(response){
-	        this.list = response.body.list;
+	        this.list = response.body;
 	        console.log(response)
-		    },function(response){
-		        console.info(response);
+		    },function(res){
+		        this.COM.errorCallBack(res,this.$vux);
 		    }
 	    )
 	  },

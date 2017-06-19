@@ -8,10 +8,11 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 import H5lock from 'H5lock'
 import Com from 'Com'
-import {ToastPlugin, ConfirmPlugin, LoadingPlugin} from 'vux'
+import {ToastPlugin, ConfirmPlugin, LoadingPlugin, AlertPlugin} from 'vux'
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
+Vue.use(AlertPlugin)
 
 Vue.prototype.COM = Com
 
@@ -24,3 +25,12 @@ new Vue({
   router,
   render: h => h(App)
 }).$mount('#app-box')
+
+router.beforeEach((to, from, next) => {
+	console.log(to.fullPath);
+	if(to.fullPath == '' || to.fullPath == '/'){
+		next('/home')
+	}else{
+		next()
+	}
+})

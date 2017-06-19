@@ -29,7 +29,9 @@ let webpackConfig = {
       'vue$': 'vue/dist/vue.esm.js',
       '@': resolve('src'),
       'H5lock': path.resolve(__dirname, '../static/js/H5lock.publish.js'),
-      'Com': path.resolve(__dirname, '../static/js/common.js')
+      'Com': path.resolve(__dirname, '../static/js/common.js'),
+      //'jquery': path.resolve(__dirname, '../static/js/jquery-1.9.1.min.js')
+      'jquery':'jquery'
     }
   },
   module: {
@@ -72,7 +74,10 @@ module.exports = vuxLoader.merge(webpackConfig, {
   plugins: ['vux-ui', 'progress-bar', 'duplicate-style',
 		  	new webpack.ProvidePlugin({
 		        H5lock: "H5lock",
-		        Com: "Com"
+		        Com: "Com",
+		        $: "jquery",
+		        jQuery: "jquery",
+		        jQ: "jquery"
 		    })
   	]
 })
