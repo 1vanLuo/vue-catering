@@ -16,13 +16,12 @@
 </template>
 
 <script>
-//import {XHeader,Divider,Checker,CheckerItem,TransferDomDirective as TransferDom } from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import Divider from 'vux/src/components/divider'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Divider from 'vux/src/components/divider/index.vue'
 import {Checker,CheckerItem} from 'vux/src/components/checker'
 import {TransferDomDirective as TransferDom} from 'vux/src/directives/transfer-dom/index.js'
 
-import wx from 'weixin-js-sdk'
+import wx from 'wx'
 import jQ from 'jquery'
 
 export default{

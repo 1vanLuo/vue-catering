@@ -18,12 +18,12 @@
 				        <tbody>
 				          <tr v-for="c in combo">
 				            <td>{{c.name}}</td>
-				            <td>x {{residue_num}}</td>
+				            <td>x {{c.residue_num}}</td>
 				          </tr>
 				        </tbody>
 				        <tfoot>
 				        	<tr>
-				        		<td style="text-align: right;padding-right: 10px;" colspan="2">合计：{{combo.length}}</td>
+				        		<td style="text-align: right;padding-right: 10px;" colspan="2">合计：{{total}}</td>
 				        	</tr>
 				        </tfoot>
 			      </x-table>
@@ -34,10 +34,10 @@
 </template>
 
 <script>
-import XHeader from 'vux/src/components/x-header'
-import XTable from 'vux/src/components/x-table'
-import Scroller from 'vux/src/components/scroller'
-import Group from 'vux/src/components/group'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import XTable from 'vux/src/components/x-table/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
+import Group from 'vux/src/components/group/index.vue'
 
 import jQ from 'jquery'
 
@@ -51,16 +51,19 @@ export default{
 	data(){
 		return{
 			fee:'',
-			combo:[]
+			combo:[],
+			total:''
 		}
 	},
 	created(){
 		this.fee = this.$route.query.fee;
-		let id = this.$route.query.id;
-		let _this = this;
-		_this.$vux.loading.show({
+		this.$vux.loading.show({
 			text:'正在加载'
 		});
+	},
+	mounted(){
+		let id = this.$route.query.id;
+		let _this = this;
 		jQ.ajax({
 			url:_this.COM.urls.getVipCombos,
 			data:{'vid':id},
@@ -68,20 +71,23 @@ export default{
 			success:function(res){
 				_this.$vux.loading.hide();
 				_this.combo = res;
+				let ct = 0;
+				for(let i of res){
+					ct += i.residue_num;
+				}
+				_this.total = ct;
+				_this.$nextTick(() => {
+					let hbHeight = _this.$refs.hb.$el.offsetHeight;
+					let sc = _this.$refs.vpListScroller
+					let scHeight = window.innerHeight - hbHeight - 5;
+					sc.$el.style.height = scHeight + 'px';
+					sc.reset({top: 0})
+				})
 			},
 			error:function(res){
 				_this.COM.errorCallBack(res,_this.$vux);
 			}
-		})
-	},
-	mounted(){
-		this.$nextTick(() => {
-			let hbHeight = this.$refs.hb.$el.offsetHeight;
-			let sc = this.$refs.vpListScroller
-			let scHeight = window.innerHeight - hbHeight - 5;
-			sc.$el.style.height = scHeight + 'px';
-			sc.reset({top: 0})
-		})
+		});
 	},
 	methods:{
 		onScroll(pos) {

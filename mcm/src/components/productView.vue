@@ -31,7 +31,7 @@
 </template>
 
 <script>
-import XHeader from 'vux/src/components/x-header'
+import XHeader from 'vux/src/components/x-header/index.vue'
 
 import jQ from 'jquery'
 
@@ -111,36 +111,42 @@ export default{
 	 	  	jQ.ajax({
 	 	  		url:_this.COM.urls.cartSave,
 	 	  		type:'post',
-	 	  		data:{'cart':para},
+	 	  		data:{'cart':JSON.stringify(para)},
 	 	  		success:function(res){
- 	  				let cartId = res.data.id;
- 	  				let f = false;
- 	  				for(let i of _this.cart){
-			  			if(i.cartId === cartId){
-			  				++i.num;
-			  				_this.cart.splice(index,1,i);
-			  				f = true;
-			  				break;
-			  			}
-			  		}
- 	  				if(!f){
- 	  					c.cartId = cartId;
- 	  					_this.cart.splice(len,0,c);
- 	  				}
- 	  				
- 	  				let ct = 0;
-			  		for(let i of _this.cart){
-			  			ct += i.num;
-			  		}
-			  		_this.count = ct;
-			  		if(_this.count > 0){
-			  			_this.$refs.bage.style.display = 'block';
-			  		}else{
-			  			_this.$refs.bage.style.display = 'none';
-			  		}
-			  		console.log('=====this.cart=======')
-			  		console.log(_this.cart);
-			  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
+	 	  			_this.$vux.loading.hide();
+	 	  			if(res.code > 0){
+	 	  				let cartId = res.data;
+	 	  				let f = false;
+	 	  				let len = _this.cart.length;
+	 	  				
+	 	  				for(let i=0; i<len; i++){
+	 	  					let item = _this.cart[i];
+				  			if(item.cartId === cartId){
+				  				++item.num;
+				  				_this.cart.splice(i,1,item);
+				  				f = true;
+				  				break;
+				  			}
+				  		}
+	 	  				if(!f){
+	 	  					c.cartId = cartId;
+	 	  					_this.cart.splice(len,0,c);
+	 	  				}
+	 	  				
+	 	  				let ct = 0;
+				  		for(let i of _this.cart){
+				  			ct += i.num;
+				  		}
+				  		_this.count = ct;
+				  		if(_this.count > 0){
+				  			_this.$refs.bage.style.display = 'block';
+				  		}else{
+				  			_this.$refs.bage.style.display = 'none';
+				  		}
+				  		console.log('=====this.cart=======')
+				  		console.log(_this.cart);
+				  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
+	 	  			}
 	 	  		},
 	 	  		error:function(res){
 	 	  			_this.COM.errorCallBack(res,_this.$vux);
@@ -192,6 +198,8 @@ export default{
 		  			_c.desc = c.desc;
 		  			_c.img = c.img;
 		  			_c.name = c.name;
+		  			_c.price = c.price;
+		  			_c.vipPrice = c.vipPrice;
 		  			flag = true;
 		  			break;
 		  		}
@@ -202,6 +210,8 @@ export default{
 	  			_c.img = item.img;
 	  			_c.desc = item.desc;
 	  			_c.name = item.name;
+	  			_c.price = item.price;
+	  			_c.vipPrice = item.vipPrice;
 		  	}
 	  		this.showDot(event.currentTarget);
    			this.cartSave(_c);

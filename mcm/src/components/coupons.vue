@@ -2,8 +2,9 @@
 	<div>
 		<x-header :left-options="{backText: ''}" ref="hb">我的优惠券</x-header>
 		<button class="own-login__switch" @click.stop="exchange">兑换优惠券</button>
-		<Scroller lock-x  @on-scroll="onScroll" ref="cpScroller">
-		  <div style="padding-bottom: 5px;">
+		<Scroller lock-x @on-scroll="onScroll" v-model="status" ref="cpScroller" :pullup-config="pullUp" 
+			@on-pullup-loading="pullupRefresh" :use-pullup=true @on-scroll-bottom="onScrollBottom">
+		  <div style="padding-bottom: 15px;">
 		  	  <div class="own-data_none" ref="dataTip">暂无数据</div>
 		      <div class="own-cp__wrapper" v-for="c in list">
 		      	<div class="fee">
@@ -40,13 +41,13 @@
 
 <script>
 //import {XHeader, Scroller, Group, XDialog, TransferDomDirective as TransferDom} from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import Group from 'vux/src/components/group'
-import XDialog from 'vux/src/components/x-dialog'
-import Scroller from 'vux/src/components/scroller'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Group from 'vux/src/components/group/index.vue'
+import XDialog from 'vux/src/components/x-dialog/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
 import {TransferDomDirective as TransferDom} from 'vux/src/directives/transfer-dom/index.js'
 
-import wx from 'weixin-js-sdk'
+import wx from 'wx'
 import jQ from 'jquery'
 
 export default{
@@ -63,48 +64,22 @@ export default{
 		return{
 			showDialogStyle:false,
 			hob: true,
-			list:[{
-				fee:100,
-				limit_fee:300
+			list:[],
+			code:'',
+			pullUp:{
+			  content: '',
+			  pullUpHeight: 100,
+			  height: 40,
+			  autoRefresh: false,
+			  downContent: '释放后加载',
+			  upContent: '上拉加载更多',
+			  loadingContent: '加载中...',
+			  clsPrefix: 'xs-plugin-pullup-'
 			},
-			{
-				fee:100,
-				limit_fee:300
+			status:{
+				pullupStatus:'default'
 			},
-			{
-				fee:100,
-				limit_fee:300
-			},
-			{
-				fee:100,
-				limit_fee:300
-			},
-			{
-				fee:100,
-				limit_fee:300
-			},
-			{
-				fee:100,
-				limit_fee:300
-			},
-			{
-				fee:100,
-				limit_fee:300
-			},
-			{
-				fee:100,
-				limit_fee:300
-			},
-			{
-				fee:100,
-				limit_fee:300
-			},
-			{
-				fee:100,
-				limit_fee:300
-			}],
-			/*list:[],*/
-			code:''
+			pageNo:0
 		}
 	},
 	created(){
@@ -112,21 +87,6 @@ export default{
 		_this.$vux.loading.show({
 			text:'正在加载'
 		})
-		jQ.ajax({
-			url:_this.COM.urls.getCoupons,
-			type:'post',
-			data:{'pageNo':1},
-			success:function(res){
-				_this.$vux.loading.hide();
-				if(res.length > 0){
-					_this.list = res;
-					_this.$refs.dataTip.style.display = 'none';
-				}
-			},
-			error:function(res){
-				_this.COM.errorCallBack(res,_this.$vux);
-			}
-		});
 		let url = window.location.href;
 		jQ.ajax({
 		  	url:_this.COM.urls.getWxSdk,
@@ -185,15 +145,55 @@ export default{
 	    });
 	},
 	mounted(){
-		this.$nextTick(() => {
-			let hbHeight = this.$refs.hb.$el.offsetHeight;
-			let sc = this.$refs.cpScroller
-			let scHeight = window.innerHeight - hbHeight - 5;
-			sc.$el.style.height = scHeight + 'px';
-			sc.reset({top:0})
-		})
+		this.pullupRefresh();
 	},
 	methods:{
+		pullupRefresh(){
+			let _this = this;
+			++_this.pageNo;
+			jQ.ajax({
+				url:_this.COM.urls.getCoupons,
+				type:'post',
+				data:{'pageNo':_this.pageNo},
+				success:function(res){
+					_this.$vux.loading.hide();
+					if(res.length > 0){
+						for(let i of res){
+							_this.list.push(i);
+						}
+						_this.$refs.dataTip.style.display = 'none';
+						_this.$nextTick(() => {
+							let hbHeight = _this.$refs.hb.$el.offsetHeight;
+							let sc = _this.$refs.cpScroller;
+							let scHeight = window.innerHeight - hbHeight - 5;
+							sc.$el.style.height = scHeight + 'px';
+							sc.reset();
+						});
+						_this.status.pullupStatus = 'default';
+					}else{
+						_this.$vux.toast.show({
+							type:'text',
+							text:'已经到底了',
+							position:'bottom'
+						})
+						_this.status.pullupStatus = 'disabled';
+					}
+					
+				},
+				error:function(res){
+					_this.COM.errorCallBack(res,_this.$vux);
+				}
+			});
+		},
+		onScrollBottom(){
+			if(this.status.pullupStatus == 'disabled'){
+				this.$vux.toast.show({
+					type:'text',
+					text:'没有更多数据了',
+					position:'bottom'
+				})
+			}
+		},
 		onScroll(pos) {
 	      this.scrollTop = pos.top
 	    },

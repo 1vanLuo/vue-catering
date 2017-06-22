@@ -8,7 +8,10 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 import H5lock from 'H5lock'
 import Com from 'Com'
-import {ToastPlugin, ConfirmPlugin, LoadingPlugin, AlertPlugin} from 'vux'
+import ToastPlugin from 'vux/src/plugins/toast/index.js'
+import ConfirmPlugin from 'vux/src/plugins/confirm/index.js'
+import LoadingPlugin from 'vux/src/plugins/loading/index.js'
+import AlertPlugin from 'vux/src/plugins/alert/index.js'
 Vue.use(LoadingPlugin)
 Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)

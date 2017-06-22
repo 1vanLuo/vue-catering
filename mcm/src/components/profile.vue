@@ -14,10 +14,10 @@
 </template>
 
 <script>
-import XHeader from 'vux/src/components/x-header'
-import Scroller from 'vux/src/components/scroller'
-import Group from 'vux/src/components/group'
-import XInput from 'vux/src/components/x-input'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
+import Group from 'vux/src/components/group/index.vue'
+import XInput from 'vux/src/components/x-input/index.vue'
 export default{
 	components:{
 		XHeader,

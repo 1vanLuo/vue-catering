@@ -1,6 +1,6 @@
-//var host = 'http://192.168.0.109:8085/catering/a';
+var host = 'http://192.168.0.109:8085/catering/a';
 //var host = 'http://192.168.0.8:8085/catering/a';
-var host = '/catering/a';
+//var host = '/catering/a';
 var imgHost = 'http://124.232.137.107:6660';
 var testOpenId = 'oDgoQxIxHbRy0m0zYa4aSA1v6HxY';
 
@@ -30,6 +30,8 @@ urls.valiPhoe = host + '/weixin/wxUser/validPhone';
 urls.resetPwd = host + '/weixin/wxUser/resetPwd';
 urls.recharge = host + '/weixin/api/recharge';
 urls.getVipCombos = host + '/weixin/api/vipCardCombo';
+urls.saveOrder = host + '/weixin/api/orderInsert';
+urls.delCart = host + '/weixin/api/cartDelete';
 
 var postOpt = {
 	emulateJSON: true,

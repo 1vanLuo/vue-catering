@@ -18,11 +18,10 @@
 </template>
 
 <script>
-//import {XHeader, XButton} from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import XButton from 'vux/src/components/x-button'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import XButton from 'vux/src/components/x-button/index.vue'
 
-import wx from 'weixin-js-sdk'
+import wx from 'wx'
 import jQ from 'jquery'
 
 export default{

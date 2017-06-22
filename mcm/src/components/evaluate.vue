@@ -16,10 +16,9 @@
 </template>
 
 <script>
-//import {XHeader, Rater, XTextarea} from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import Rater from 'vux/src/components/rater'
-import XTextarea from 'vux/src/components/x-textarea'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Rater from 'vux/src/components/rater/index.vue'
+import XTextarea from 'vux/src/components/x-textarea/index.vue'
 
 export default{
 	components:{

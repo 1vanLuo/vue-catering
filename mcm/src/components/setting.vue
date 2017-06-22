@@ -18,11 +18,10 @@
 </template>
 
 <script>
-//import {XHeader, Scroller, Group, Cell} from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import Scroller from 'vux/src/components/scroller'
-import Group from 'vux/src/components/group'
-import Cell from 'vux/src/components/cell'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
+import Group from 'vux/src/components/group/index.vue'
+import Cell from 'vux/src/components/cell/index.vue'
 
 export default{
 	components:{

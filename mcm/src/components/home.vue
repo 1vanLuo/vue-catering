@@ -27,11 +27,11 @@
 //import { Swiper, Grid, GridItem, Panel, XButton, XHeader, Scroller} from 'vux'
 import {Swiper} from 'vux/src/components/swiper'
 import {Grid, GridItem} from 'vux/src/components/grid'
-import Panel from 'vux/src/components/panel'
-import XButton from 'vux/src/components/x-button'
-import XHeader from 'vux/src/components/x-header'
-import Scroller from 'vux/src/components/scroller'
-import wx from 'weixin-js-sdk'
+import Panel from 'vux/src/components/panel/index.vue'
+import XButton from 'vux/src/components/x-button/index.vue'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
+import wx from 'wx'
 import jQ from 'jquery'
 const baseList = [{
   img: '../../static/images/p2.jpg',
@@ -110,7 +110,7 @@ export default {
         }
 	    },
 	    error:function(res){
-	        _this.COM.errorCallBack(res,t_his.$vux);
+	        _this.COM.errorCallBack(res,_this.$vux);
 	    }
     });
 		jQ.ajax({
@@ -123,31 +123,39 @@ export default {
 	      _this.COM.errorCallBack(res,_this.$vux);
 	    }
     });
-		jQ.ajax({
+		/*jQ.ajax({
 			url:_this.COM.urls.getCarts,
 			type:'post',
 			data:{'openId':_openId},
 			success:function(data){
-				let carts = data.data.carts;
-				let _cart = [];
-				for(let c of carts){
-					let _c = {};
-					_c.cartId = c.id;
-					_c.id = c.productReleaseId;
-					_c.num = c.num;
-					_c.name = c.name;
-					_c.img = c.img;
-					_c.desc = c.desc;
-					_cart.push(_c);
+				if(data.code > 0){
+					let carts = data.data.carts;
+					console.log('----carts-----')
+					console.log(carts)
+					let _cart = [];
+					for(let c of carts){
+						let _c = {};
+						_c.cartId = c.id;
+						_c.id = c.productReleaseId;
+						_c.num = c.num;
+						_c.name = c.name;
+						_c.img = _this.COM.imgHost + c.img;
+						_c.desc = c.desc;
+						_c.price = c.price;
+						_cart.push(_c);
+					}
+					window.sessionStorage.setItem('cart',JSON.stringify(_cart));
+					_this.cart = _cart;
+					console.log('------_this.cart-------');
+					console.log(_this.cart);
+					_this.count = _cart.length;
+					console.log(_this.count);
 				}
-				window.sessionStorage.setItem('cart',JSON.stringify(_cart));
-				_this.cart = _cart;
-				_this.count = _cart.length;
 			},
 			error:function(res){
 				_this.COM.errorCallBack(res,_this.$vux);
 			}
-		})
+		})*/
     let url = window.location.href;
 	  jQ.ajax({
 	  	url:_this.COM.urls.getWxSdk,
@@ -188,12 +196,51 @@ export default {
 		this.arr = [{num:0}];
   },
   mounted: function(){
-  //	let cart = JSON.parse(sessionStorage.getItem('cart')) || [];
-  	console.log('--cart---')
-		console.log(this.cart)
-	//	this.cart = cart;
-		let ct = 0;
-		for(let i of this.cart){
+  	let _this = this;
+  	let _openId = _this.COM.testOpenId;
+  	jQ.ajax({
+			url:_this.COM.urls.getCarts,
+			type:'post',
+			data:{'openId':_openId},
+			success:function(data){
+				if(data.code > 0){
+					let carts = data.data.carts;
+					let _cart = [];
+					for(let c of carts){
+						let _c = {};
+						_c.cartId = c.id;
+						_c.id = c.productReleaseId;
+						_c.num = c.num;
+						_c.name = c.name;
+						_c.img = _this.COM.imgHost + c.img;
+						_c.desc = c.desc;
+						_c.price = c.price;
+						_c.vipPrice = c.vipPrice;
+						_cart.push(_c);
+					}
+					window.sessionStorage.setItem('cart',JSON.stringify(_cart));
+					_this.cart = _cart;
+					let ct = 0;
+					for(let i of _this.cart){
+						ct += i.num;
+					}
+					_this.count = ct;
+					if(_this.count > 0){
+						_this.$refs.bage.style.display = 'block';
+					}else{
+						_this.$refs.bage.style.display = 'none';
+					}
+				}
+			},
+			error:function(res){
+				_this.COM.errorCallBack(res,_this.$vux);
+			}
+		})
+  	
+		/*let ct = 0;
+		for(let i of _this.cart){
+			console.log('-------i------')
+			console.log(i)
 			ct += i.num;
 		}
 		this.count = ct;
@@ -202,7 +249,7 @@ export default {
 			this.$refs.bage.style.display = 'block';
 		}else{
 			this.$refs.bage.style.display = 'none';
-		}
+		}*/
   	this.$nextTick(() => {
 		  let seHeight = this.$refs.se.offsetHeight;
 		  let swHeight = window.innerWidth / 1.8;
@@ -229,6 +276,7 @@ export default {
  	  	}
  	  	let _list = {};
  	  	_list.list = cartList;*/
+ 	  	console.log(c)
  	  	let _this = this;
  	  	let para = {};
  	  	let pr = {};
@@ -241,14 +289,18 @@ export default {
  	  	jQ.ajax({
  	  		url:_this.COM.urls.cartSave,
  	  		type:'post',
- 	  		data:{'cart':para},
+ 	  		data:{'cart':JSON.stringify(para),'openId':_this.openId},
  	  		success:function(res){
- 	  			  let cartId = res.data.id;
+ 	  			_this.$vux.loading.hide();
+ 	  			if(res.code > 0){
+ 	  				let cartId = res.data;
  	  				let f = false;
- 	  				for(let i of _this.cart){
-			  			if(i.cartId === cartId){
-			  				++i.num;
-			  				_this.cart.splice(index,1,i);
+ 	  				let len = _this.cart.length
+ 	  				for(let i=0; i<len; i++){
+ 	  					let item = _this.cart[i];
+			  			if(item.cartId === cartId){
+			  				++item.num;
+			  				_this.cart.splice(i,1,item);
 			  				f = true;
 			  				break;
 			  			}
@@ -271,6 +323,7 @@ export default {
 			  		console.log('=====this.cart=======')
 			  		console.log(_this.cart);
 			  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
+ 	  			}
  	  		},
  	  		error:function(res){
  	  			_this.COM.errorCallBack(res,_this.$vux);
@@ -323,7 +376,7 @@ export default {
   		},6);
 	  },
 	  addToCart(item){
-	  	let index = 0;
+	  	console.log(item)
 	  	let flag = false;
 	  	let len = this.cart.length;
 	  	let _cart = this.cart;
@@ -339,15 +392,20 @@ export default {
 	  			_c.desc = c.desc;
 	  			_c.img = c.img;
 	  			_c.name = c.name;
+	  			_c.price = c.price;
+	  			_c.vipPrice = c.vipPrice;
 	  			flag = true;
 	  			break;
 	  		}
 	  	}
 	  	if(!flag){
+	  		_c.id = item.id;
   			_c.num = item.num;
   			_c.img = item.img;
   			_c.desc = item.desc;
   			_c.name = item.name;
+  			_c.price = item.price;
+  			_c.vipPrice = item.vipPrice;
 	  	}
   		this.showDot(event.currentTarget);
 			this.cartSave(_c);

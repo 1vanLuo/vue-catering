@@ -9,7 +9,7 @@
 </template>
 
 <script>
-import XHeader from 'vux/src/components/x-header'
+import XHeader from 'vux/src/components/x-header/index.vue'
 
 import jQ from 'jquery'
 
@@ -52,6 +52,7 @@ export default{
 			  	}
 			  jQ.ajax({
 			  	url:_this.COM.urls.login,
+			  	type:'post',
 			  	data:data,
 			  	success:function(res){
 		  			_this.$vux.loading.hide();
@@ -86,8 +87,8 @@ export default{
 					}
 		  		},
 			  	error:function(res){
-			  			this.COM.errorCallBack(res,_this.$vux);
-			  		}
+		  			_this.COM.errorCallBack(res,_this.$vux);
+		  		}
 			  	});
 			  } 
 			}

@@ -9,8 +9,8 @@
 			    </group>
 			    <group title="用餐信息">
 			      <x-input title="人数" type="number" placeholder="请输入用餐人数" v-model="order.people"></x-input>
-			      <datetime v-model="order.eatTime" :placeholder="meatTime" :min-year=2017 format="YYYY-MM-DD HH:mm" :title="timeTitle" year-row="{value}年" month-row="{value}月" day-row="{value}日" hour-row="{value}点" minute-row="{value}分" confirm-text="确定" cancel-text="取消"></datetime>
-			      <x-input title="餐巾纸(包)" type="number" placeholder="请输入餐巾纸包数" v-model="order.napkin"></x-input>
+			      <datetime v-model="order.eatingTime" :placeholder="meatTime" :min-year=2017 format="YYYY-MM-DD HH:mm" :title="timeTitle" year-row="{value}年" month-row="{value}月" day-row="{value}日" hour-row="{value}点" minute-row="{value}分" confirm-text="确定" cancel-text="取消"></datetime>
+			      <x-input title="餐巾纸(包)" type="number" placeholder="请输入餐巾纸包数" v-model="order.napkins"></x-input>
 			      <div class="own-checker__box">
 			      	<div class="own-checker__inner">
 			      	  <span>包厢</span>
@@ -49,15 +49,16 @@
 </template>
 
 <script>
-//import {XHeader, Scroller, Group, XInput, Checker, CheckerItem, XTextarea, XTable, Datetime} from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import Scroller from 'vux/src/components/scroller'
-import Group from 'vux/src/components/group'
-import XInput from 'vux/src/components/x-input'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
+import Group from 'vux/src/components/group/index.vue'
+import XInput from 'vux/src/components/x-input/index.vue'
 import {Checker,CheckerItem} from 'vux/src/components/checker'
-import XTextarea from 'vux/src/components/x-textarea'
-import XTable from 'vux/src/components/x-table'
-import Datetime from 'vux/src/components/datetime'
+import XTextarea from 'vux/src/components/x-textarea/index.vue'
+import XTable from 'vux/src/components/x-table/index.vue'
+import Datetime from 'vux/src/components/datetime/index.vue'
+
+import jQ from 'jquery'
 
 export default{
 	components:{
@@ -80,17 +81,19 @@ export default{
 				linkMan:'',
 				phone:'',
 				people:'',
-				eatTime:'',
-				napkin:'',
+				eatingTime:'',
+				napkins:'',
 				balcony:'',
 				remark:''
-			}
+			},
+			openId:''
 		}
 	},
 	created(){
 		this.order.eatTime = this.COM.getNowDateTime();
 		this.orderList = JSON.parse(window.sessionStorage.getItem('cart')) || [];
 		console.log(this.orderList)
+		this.openId = window.localStorage.getItem("openId") || this.COM.testOpenId;
 	},
 	mounted(){
 	},
@@ -99,33 +102,39 @@ export default{
 	      this.scrollTop = pos.top
 		},
 		subOrder(){
-			  let oLists = [];
+			  let cartIds = [];
 			  for(let ol of this.orderList){
-			  	let olist = {};
-			  	olist.price = ol.price;
-			  	olist.num = ol.value;
-			  	olist.fee = ol.sum;
-			  	olist.productReleaseId = ol.id;
-			  	oLists.push(olist);
+			  	cartIds.push(ol.cartId);
 			  }
-			  this.order.customerOrderLists = oLists;
+			  this.order.cartId = cartIds;
 			  console.log(this.order);
 			  this.$vux.loading.show({
 			    text: '正在提交订单'
 			  });
 			  let _this = this;
-			  setTimeout(function(){
-				_this.$vux.loading.hide();
-				_this.$vux.confirm.show({
-				  title:'支付确认',
-				  content:'您的订单已提交，是否立即支付？',
-				  confirmText:'是',
-				  cancelText:'否',
-				  onCancel () {
-				  },
-				  onConfirm () {}
-				})
-			  },1000)
+			  jQ.ajax({
+			  	url:_this.COM.urls.saveOrder,
+			  	type:'post',
+			  	data:{'order':JSON.stringify(_this.order),'openId':_this.openId},
+			  	success:function(res){
+			  		_this.$vux.loading.hide();
+			  		_this.$vux.alert.show({
+						content:'您的订单已提交',
+						onHide(){
+							if(res.code > 0){
+								_this.$router.push('/home');
+							}else if(res.code == 0){
+								_this.$router.push('/loginCaptcha');
+							}else{
+								_this.$router.push('/recharge');
+							}
+						}
+					});
+			  	},
+			  	error:function(res){
+			  		_this.COM.errorCallBack(res,_this.$vux);
+			  	}
+			  })
 		}
 	}
 }

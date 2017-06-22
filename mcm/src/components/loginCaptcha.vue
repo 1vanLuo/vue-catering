@@ -13,7 +13,7 @@
 </template>
 
 <script>
-import XHeader from 'vux/src/components/x-header'
+import XHeader from 'vux/src/components/x-header/index.vue'
 export default{
 	components:{
 		XHeader

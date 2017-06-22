@@ -1,7 +1,8 @@
 <template>
 	<div>
 		<x-header :left-options="{backText: ''}" ref="hb">我的订单</x-header>
-		<Scroller lock-x  @on-scroll="onScroll" ref="orderListScroller">
+		<Scroller lock-x  @on-scroll="onScroll" ref="orderListScroller" v-model="status" :pullup-config="pullUp" 
+			@on-pullup-loading="pullupRefresh" :use-pullup=true @on-scroll-bottom="onScrollBottom">
 		  <div style="padding-bottom: 5px;">	
 		  	<div class="own-data_none" ref="dataTip">暂无数据</div>
 			<div v-for="o in orders" style="padding: 10px;background-color: #fff;margin-bottom: 10px;">
@@ -25,9 +26,8 @@
 </template>
 
 <script>
-//import { FormPreview, XHeader, Scroller } from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import Scroller from 'vux/src/components/scroller'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
 
 import jQ from 'jquery'
 
@@ -64,40 +64,77 @@ export default{
 					}
 				}
 			]*/
-			orders:[]
+			orders:[],
+			pullUp:{
+			  content: '',
+			  pullUpHeight: 100,
+			  height: 40,
+			  autoRefresh: false,
+			  downContent: '释放后加载',
+			  upContent: '上拉加载更多',
+			  loadingContent: '加载中...',
+			  clsPrefix: 'xs-plugin-pullup-'
+			},
+			status:{
+				pullupStatus:'default'
+			},
+			pageNo:0
 		}
 	},
 	created(){
-		let _this = this;
-		_this.$vux.loading.show({
+		this.$vux.loading.show({
 			text:'正在加载'
-		})
-		jQ.ajax({
-			url:_this.COM.urls.getOrderList,
-			data:{'pageNo':1},
-			type:'post',
-			success:function(res){
-				_this.$vux.loading.hide();
-				if(res.length > 0){
-					_this.orders = res;
-					_this.$refs.dataTip.style.display = 'none';
-				}
-			},
-			error:function(res){
-				_this.COM.errorCallBack(res,_this.$vux);
-			}
-		})
+		});
 	},
 	mounted(){
-		this.$nextTick(() => {
-			let hbHeight = this.$refs.hb.$el.offsetHeight;
-			let sc = this.$refs.orderListScroller
-			let scHeight = window.innerHeight - hbHeight - 5;
-			sc.$el.style.height = scHeight + 'px';
-			sc.reset({top:0})
-		})
+		this.pullupRefresh();
 	},
 	methods:{
+		pullupRefresh(){
+			let _this = this;
+			++_this.pageNo;
+			jQ.ajax({
+				url:_this.COM.urls.getOrderList,
+				data:{'pageNo':_this.pageNo},
+				type:'post',
+				success:function(res){
+					_this.$vux.loading.hide();
+					if(res.length > 0){
+						for(let i of res){
+							_this.orders.push(i);
+						}
+						_this.$refs.dataTip.style.display = 'none';
+						_this.$nextTick(() => {
+							let sc = _this.$refs.orderListScroller
+							let hbHeight = _this.$refs.hb.$el.offsetHeight;
+							let scHeight = window.innerHeight - hbHeight - 5;
+							sc.$el.style.height = scHeight + 'px';
+							sc.reset();
+						});
+						_this.status.purllupStatus = 'default';
+					}else{
+						_this.$vux.toast.show({
+							type:'text',
+							text:'已经到底了',
+							position:'bottom'
+						})
+						_this.status.pullupStatus = 'disabled';
+					}
+				},
+				error:function(res){
+					_this.COM.errorCallBack(res,_this.$vux);
+				}
+			});
+		},
+		onScrollBottom(){
+			if(this.status.pullupStatus == 'disabled'){
+				this.$vux.toast.show({
+					type:'text',
+					text:'没有更多数据了',
+					position:'bottom'
+				})
+			}
+		},
 		onScroll(pos) {
 	      this.scrollTop = pos.top
 		},

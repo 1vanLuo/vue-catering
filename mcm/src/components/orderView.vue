@@ -12,15 +12,7 @@
 			      <x-input title="人数" type="number" readonly ></x-input>
 			      <x-input title="用餐时间" type="text" readonly ></x-input>
 			      <x-input title="餐巾纸(包)" type="number" readonly ></x-input>
-			      <div class="own-checker__box">
-			      	<div class="own-checker__inner">
-			      	  <span>包厢</span>
-			      	  <checker default-item-class="demo2-item" selected-item-class="demo2-item-selected">
-				        <checker-item value="1">是</checker-item>
-				        <checker-item value="2">否</checker-item>
-				      </checker>
-				    </div>
-			      </div>
+			      <x-input title="包厢" type="text" readonly ></x-input>
 			      <group title="酒水饮料请备注">
 				     <x-textarea name="remark" readonly v-model="order.remark"></x-textarea>
 				  </group>
@@ -49,15 +41,13 @@
 </template>
 
 <script>
-//import {XHeader, Scroller, Group, XInput, Checker, CheckerItem, XTextarea, XTable, Datetime} from 'vux'
-import XHeader from 'vux/src/components/x-header'
-import Scroller from 'vux/src/components/scroller'
-import Group from 'vux/src/components/group'
-import XInput from 'vux/src/components/x-input'
-import {Checker,CheckerItem} from 'vux/src/components/checker'
-import XTextarea from 'vux/src/components/x-textarea'
-import XTable from 'vux/src/components/x-table'
-import Datetime from 'vux/src/components/datetime'
+import XHeader from 'vux/src/components/x-header/index.vue'
+import Scroller from 'vux/src/components/scroller/index.vue'
+import Group from 'vux/src/components/group/index.vue'
+import XInput from 'vux/src/components/x-input/index.vue'
+import XTextarea from 'vux/src/components/x-textarea/index.vue'
+import XTable from 'vux/src/components/x-table/index.vue'
+import Datetime from 'vux/src/components/datetime/index.vue'
 
 export default{
 	components:{
@@ -65,8 +55,6 @@ export default{
 		Scroller,
 		Group,
 		XInput,
-		Checker,
-		CheckerItem,
 		XTextarea,
 		XTable,
 		Datetime

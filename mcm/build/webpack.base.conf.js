@@ -30,8 +30,8 @@ let webpackConfig = {
       '@': resolve('src'),
       'H5lock': path.resolve(__dirname, '../static/js/H5lock.publish.js'),
       'Com': path.resolve(__dirname, '../static/js/common.js'),
-      //'jquery': path.resolve(__dirname, '../static/js/jquery-1.9.1.min.js')
-      'jquery':'jquery'
+      'jquery':'jquery/dist/jquery.min.js',
+      'wx':'weixin-js-sdk'
     }
   },
   module: {
@@ -77,7 +77,8 @@ module.exports = vuxLoader.merge(webpackConfig, {
 		        Com: "Com",
 		        $: "jquery",
 		        jQuery: "jquery",
-		        jQ: "jquery"
+		        jQ: "jquery",
+		        wx: "wx"
 		    })
   	]
 })
