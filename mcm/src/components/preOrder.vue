@@ -102,6 +102,16 @@ export default{
 	      this.scrollTop = pos.top
 		},
 		subOrder(){
+			  let obj = this.order;
+			  if(obj.remark == ''){obj.remark='无'}
+			  for(let prop in obj){
+				 if(obj[prop] == undefined || obj[prop] ==''){
+				 	this.$vux.alert.show({
+					    content: '您填写的信息不完整'
+					});
+				 	return 
+				 }
+			  }
 			  let cartIds = [];
 			  for(let ol of this.orderList){
 			  	cartIds.push(ol.cartId);
@@ -119,7 +129,7 @@ export default{
 			  	success:function(res){
 			  		_this.$vux.loading.hide();
 			  		_this.$vux.alert.show({
-						content:'您的订单已提交',
+						content:res.msg,
 						onHide(){
 							if(res.code > 0){
 								_this.$router.push('/home');
