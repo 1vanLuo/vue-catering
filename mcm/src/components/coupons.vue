@@ -23,7 +23,7 @@
 	      </div>
 		</Scroller>
 		<div v-transfer-dom>
-	      <x-dialog v-model="showDialogStyle" :hide-on-blur="hob" :dialog-style="{'max-width': '70%', width: '70%', height: '25%', 'background-color': '#fff'}">
+	      <x-dialog v-model="showDialogStyle" :hide-on-blur="hob" :dialog-style="{'max-width': '70%', width: '70%', height: '10rem', top:'25%', 'background-color': '#fff'}">
 	        <p style="color:#fff;text-align:center;">
 	          <input placeholder="请输入兑换码" 
 	          	style="border: none;font-size: 0.85rem;width: 70%;text-align: center;line-height: 1.7rem;

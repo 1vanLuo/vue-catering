@@ -11,7 +11,7 @@ export default {
   name: 'app',
   created() {
   	const router = this.$router;
-  	let openId = window.localStorage.getItem('register') || this.COM.testOpenId;
+  	let openId = window.localStorage.getItem('openId') || this.COM.testOpenId;
   	let isReg = window.sessionStorage.getItem('register') || '0';
   	let _this = this;
   	let href = window.location.href;

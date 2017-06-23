@@ -58,6 +58,7 @@ import XTextarea from 'vux/src/components/x-textarea/index.vue'
 import XTable from 'vux/src/components/x-table/index.vue'
 import Datetime from 'vux/src/components/datetime/index.vue'
 
+import wx from 'wx'
 import jQ from 'jquery'
 
 export default{
@@ -128,18 +129,72 @@ export default{
 			  	data:{'order':JSON.stringify(_this.order),'openId':_this.openId},
 			  	success:function(res){
 			  		_this.$vux.loading.hide();
-			  		_this.$vux.alert.show({
-						content:res.msg,
-						onHide(){
-							if(res.code > 0){
-								_this.$router.push('/home');
-							}else if(res.code == 0){
-								_this.$router.push('/loginCaptcha');
-							}else{
-								_this.$router.push('/recharge');
+			  		if(res.code < 0){
+						_this.$vux.toast.show({
+							type:'warn',
+							time:2000,
+							text:'您的会员卡余额不足，将为您跳转到微信支付'
+						})
+						window.setTimeout(function(){
+							jQ.ajax({
+								url:_this.COM.urls.recharge,
+								data:{'fee':res.data},
+								type:'post',
+								success:function(response){
+									_this.$vux.loading.hide();
+									if(response.code > 0){
+										let jo = response.data;
+										wx.config({
+											debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
+											appId: jo.appId, // 必填，公众号的唯一标识
+											timestamp: jo.timestamp, // 必填，生成签名的时间戳
+											nonceStr: jo.nonceStr, // 必填，生成签名的随机串
+											signature: jo.signature,// 必填，签名
+											jsApiList: ['chooseWXPay']
+										});
+										wx.ready(function () {
+											// config信息验证后会执行ready方法，所有接口调用都必须在config接口获得结果之后
+											wx.chooseWXPay({
+												timestamp: jo.timestamp, // 支付签名时间戳 注意这里的s 文档新版大写 但是我的小写才好使
+												nonceStr: jo.nonceStr, // 支付签名随机串
+												package: 'prepay_id='+jo.prepay_id, // 统一支付接口返回的package包
+												signType: "MD5", // 签名方式，'MD5'
+												paySign: jo.paySign, // 支付签名
+												success: function (resp) {
+													if(resp.errMsg == "chooseWXPay:ok" ) {
+														_this.$router.push('/home')
+													} else {
+								
+													}
+												},
+												cancel:function(resp){
+												}
+											});
+										});
+									}else{
+										_this.$vux.alert.show({
+											content:response.msg
+										});
+									}
+								},
+								error:function(response){
+									_this.COM.errorCallBack(response,_this.$vux);
+								}
+							});
+						},2000);
+			  		}else{
+			  			_this.$vux.alert.show({
+							content:res.msg,
+							onHide(){
+								if(res.code > 0){
+									_this.$router.push('/home');
+									window.sessionStorage.removeItem('cart');
+								}else if(res.code == 0){
+									_this.$router.push('/loginCaptcha');
+								}
 							}
-						}
-					});
+						});
+			  		}
 			  	},
 			  	error:function(res){
 			  		_this.COM.errorCallBack(res,_this.$vux);
