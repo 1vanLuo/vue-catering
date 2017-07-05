@@ -98,7 +98,7 @@ export default{
 					        onShow () {
 					        },
 					        onHide () {
-					          	this.$router.push('/home')
+					          	_this.$router.push('/home');
 					        }
 					    })
 	    			}

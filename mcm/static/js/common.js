@@ -32,6 +32,15 @@ urls.recharge = host + '/weixin/api/recharge';
 urls.getVipCombos = host + '/weixin/api/vipCardCombo';
 urls.saveOrder = host + '/weixin/api/orderInsert';
 urls.delCart = host + '/weixin/api/cartDelete';
+urls.cartsPayByWX = host + '/weixin/api/cartsPayByWX';
+urls.cartsPayByVip = host + '/weixin/api/cartsPayByVip';
+urls.getBusiness = host + '/weixin/api/getBusiness';
+urls.getBusinessList = host + '/weixin/api/getBusinesslist';
+urls.cancelOrder = host + '/weixin/api/cancelOrder';
+urls.getConsumes = host + '/weixin/api/getConsume';
+urls.getRecharge = host + '/weixin/api/getRecharge';
+urls.getConsumeOrder = host + '/weixin/api/getConsumeOrder';
+
 
 var postOpt = {
 	emulateJSON: true,
@@ -65,8 +74,11 @@ var cookie = {
     }
 }
 
-var getNowDateTime = function(){
+var formatDate = function(date){
 	var  nowTime = new Date();
+	if(date != undefined && date != null && date != ''){
+		nowTime = new Date(date);
+	}
 	var  year = nowTime.getFullYear(); // 年
 	var  month = nowTime.getMonth() + 1; // 月
 	var  day = nowTime.getDate(); // 日
@@ -166,7 +178,7 @@ module.exports.imgHost = imgHost;
 module.exports.host = host;
 module.exports.urls = urls;
 module.exports.cookie = cookie;
-module.exports.getNowDateTime = getNowDateTime;
+module.exports.formatDate = formatDate;
 module.exports.errorCallBack = errorCallBack;
 module.exports.trimStr = trimStr;
 module.exports.postOpt = postOpt;

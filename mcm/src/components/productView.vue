@@ -13,6 +13,7 @@
 			<div class="name">{{product.name}}</div>
 			<div class="pricediv">
 				<div class="price"><i class="own-moneysmbol"></i>{{product.price}}</div>
+				<div class="vipPrice" style="font-size: 0.8rem;color:#aaa;line-height:2rem;float: left;margin-left: 10px;">会员价:&yen;{{product.vipPrice}}</div>
 				<button class="btn weui-media-box__btn" @click.stop="addToCart">来一份</button>
 				<div class="clearfix"></div>
 			</div>
@@ -22,7 +23,7 @@
 			<div class="evaluatediv" v-for="e in product.evaluate" v-if="product.evaluate">
 				<div class="namediv">
 					<span class="name">{{e.userName}}</span>
-					<span class="date">{{e.createDate}}</span>
+					<span class="date">{{e.createDate | formatDate}}</span>
 				</div>
 				<div class="contentdiv">{{e.content}}</div>
 			</div>
@@ -40,32 +41,49 @@ export default{
 	},
 	data(){
 		return{
-			/*product:{
-				id:'245353467',
-				img:'../../static/images/p1.jpg',
-				name:'口味虾',
-				desc:'新鲜活虾',
-				price:'50.00',
-				evaluate:[
-					{
-						content:'味道非常好！',
-						userName:'张三',
-						createDate:'2017-6-11 13:08:59',
-						service:'5',
-						quality:'5'
-					},
-					{
-						content:'虾子很新鲜，干净，味道好！',
-						userName:'李四',
-						createDate:'2017-6-11 13:08:59',
-						service:'4',
-						quality:'5'
-					}
-				]
-			},*/
 			product:{},
 			cart:[],
 			count:0
+		}
+	},
+	filters:{
+		formatDate(date){
+			var  nowTime = new Date();
+			if(date != undefined && date != null && date != ''){
+				nowTime = new Date(date);
+			}
+			var  year = nowTime.getFullYear(); // 年
+			var  month = nowTime.getMonth() + 1; // 月
+			var  day = nowTime.getDate(); // 日
+			var  hh = nowTime.getHours(); // 时
+			var  mm = nowTime.getMinutes(); // 分
+			var  ss = nowTime.getSeconds(); // 秒
+			var  clock = year + "-";
+		
+			if (month < 10)
+				clock += "0";
+		
+			clock += month + "-";
+		
+			if (day < 10)
+				clock += "0";
+		
+			clock += day + " ";
+		
+			if (hh < 10)
+				clock += "0";
+		
+			clock += hh + ":";
+			if (mm < 10)
+				clock += '0';
+			clock += mm +":";
+			
+			if (ss < 10)
+				clock += '0';
+			clock += ss ;
+			
+			
+			return clock;
 		}
 	},
 	created(){
@@ -75,10 +93,16 @@ export default{
 		        this.product = JSON.parse(response.bodyText);
 		        this.product.img = this.COM.imgHost + this.product.img;
 		        this.product.num = 1;
+		        let evas = product.evaluate;
+		        for(let e of evas){
+		        	let t = e.createDate;
+		        	e.createDate = this.COM.formatDate(t);
+		        }
+		        this.product.evaluate = evas;
 		    },function(res){
 		        this.COM.errorCallBack(res,this.$vux);
 		    }
-	    )
+	   )
 	},
 	mounted(){
 		let cart = JSON.parse(sessionStorage.getItem('cart')) || [];

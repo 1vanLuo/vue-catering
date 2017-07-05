@@ -22,6 +22,11 @@ import VipCards from '../components/vipCards.vue'
 import Profile from '../components/profile.vue'
 import ForgetPassword from '../components/forgetPassword.vue'
 import VipCardList from '../components/vipCardList.vue'
+import BeforePayOrder from '../components/beforePayOrder.vue'
+import Consumes from '../components/consumes.vue'
+import ConsumeView from '../components/consumeView.vue'
+import ConsumeView2 from '../components/consumeView2.vue'
+import ConsumeView3 from '../components/consumeView3.vue'
 
 Vue.use(Router)
 
@@ -137,6 +142,31 @@ export default new Router({
     	path:'/vipCardList',
     	name:'vipCardList',
     	component: VipCardList
+    },
+    {
+    	path:'/beforePayOrder',
+    	name:'beforePayOrder',
+    	component: BeforePayOrder
+    },
+    {
+    	path:'/consumes',
+    	name:'consumes',
+    	component: Consumes
+    },
+    {
+    	path:'/consumeView',
+    	name:'consumeView',
+    	component: ConsumeView
+    },
+    {
+    	path:'/consumeView2',
+    	name:'consumeView2',
+    	component: ConsumeView2
+    },
+    {
+    	path:'/consumeView3',
+    	name:'consumeView3',
+    	component: ConsumeView3
     }
   ]
 })

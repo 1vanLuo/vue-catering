@@ -12,6 +12,9 @@
 		      <cell title="我的订单" is-link link="/orders">
 		      	<i slot="icon" class="iconfont icon-dingdan" style="display:block;margin-right:5px;font-size: 1.1rem;color:#007aff"></i>
 		      </cell>
+		      <cell title="我的消费记录" is-link link="/consumes">
+		      	<i slot="icon" class="iconfont icon-xiaofeimingxi" style="display:block;margin-right:5px;font-size: 1.1rem;color:#e81818"></i>
+		      </cell>
 		      <cell title="我的优惠券" is-link link="/coupons">
 		      	<i slot="icon" class="iconfont icon-youhuiquan1" style="display:block;margin-right:5px;font-size: 1.2rem;color:#ffc636"></i>
 		      </cell>

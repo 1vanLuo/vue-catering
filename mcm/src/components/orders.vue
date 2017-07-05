@@ -5,18 +5,26 @@
 			@on-pullup-loading="pullupRefresh" :use-pullup=true @on-scroll-bottom="onScrollBottom">
 		  <div style="padding-bottom: 5px;">	
 		  	<div class="own-data_none" ref="dataTip">暂无数据</div>
-			<div v-for="o in orders" style="padding: 10px;background-color: #fff;margin-bottom: 10px;">
+			<div v-for="(o,index) in orders" style="padding: 10px;background-color: #fff;margin-bottom: 10px;" @click="toView(o)">
 				<div class="own-order__feediv">
 					<div>
-						<div class="title">订单金额</div>
-						<div class="fee">&yen;{{o.fee}}</div>
+						<div class="logo"><img :src="o.company.logo"></div>
+						<div class="title">
+							<div class="ellipsis">{{o.company.name}}</div>
+							<div style="font-size: 0.75rem;color: #999;line-height: 1rem;">{{o.createDate}}</div>
+						</div>
+						<div class="fee">{{o.statusName}}</div>
 						<div class="clearfix"></div>
 					</div>
-					<div style="font-size: 0.75rem;color: #999;">{{o.createDate}}</div>
 				</div>
 				<div class="own-order__content">
-					<div style="float: left;">{{o.orderLists[0].product.name}}等{{o.orderLists.length}}件商品</div>
-					<div style="float: right; color: #10AEFF;" @click="toView(o)">查看详情</div>
+					<div style="float: left;font-size: 0.9rem;color:#666;margin-left: 13%;">{{o.orderList[0].product.name}}等{{o.orderList.length}}件商品</div>
+					<div style="float: right; font-weight: bold;font-size: 0.9rem;">&yen; {{o.fee}}</div>
+					<div class="clearfix"></div>
+				</div>
+				<div class="own-order__btns" >
+					<div class="pay" v-if="o.payStatus == 1" @click.stop="toPay(o)">支付订单</div>
+					<div class="cancel" v-if="o.status == 401" @click.stop="toCancel(o)">取消订单</div>
 					<div class="clearfix"></div>
 				</div>
 			</div>
@@ -38,32 +46,6 @@ export default{
 	},
 	data(){
 		return{
-			/*orders:[
-				{
-					id:'123424',
-					createDate:'2017-6-11 14:59:55',
-					orderLists:[
-						{
-							product:{
-								id:'34353647',
-								name:'口味虾',
-								price:'60.00'
-							},
-							price:'60.00',
-							num:'1',
-							productReleaseId:'87298693543'
-							
-						}
-					],
-					fee:'60.00',
-					remark:'刚好个过过过过过',
-					createUser:{
-						id:'32363456',
-						name:'张三',
-						phone:'43543542'
-					}
-				}
-			]*/
 			orders:[],
 			pullUp:{
 			  content: '',
@@ -101,8 +83,14 @@ export default{
 					_this.$vux.loading.hide();
 					if(res.length > 0){
 						for(let i of res){
+							let d = _this.COM.formatDate(i.createDate);
+							i.createDate = d;
+							let logo = i.company.logo || '';
+							i.company.logo = _this.COM.imgHost + logo;
 							_this.orders.push(i);
+							//_this.productName.push(i.orderList[0].product.name);
 						}
+						console.log(_this.orders)
 						_this.$refs.dataTip.style.display = 'none';
 						_this.$nextTick(() => {
 							let sc = _this.$refs.orderListScroller
@@ -141,6 +129,56 @@ export default{
 		toView(o){
 			window.sessionStorage.setItem('orderView',JSON.stringify(o))
 			this.$router.push({path:'/orderView'});
+		},
+		toPay(item){
+			let _this = this;
+			_this.$vux.loading.show({text:'正在支付'});
+			jQ.ajax({
+				url:_this.COM.urls.cartsPayByVip,
+				data:{'orderId':item.id,'fee':item.vipPrice,'price':item.wxPrice},
+				type:'post',
+				success:function(resp){
+					_this.$vux.loading.hide();
+					if(resp.code < 0){
+			  			let data = resp.data;
+			  			_this.$router.push({path:'/beforePayOrder',query:{'vipFee':data.vipFee,'price':data.price,'orderId':data.orderId}});
+			  		}else{
+			  			_this.$vux.alert.show({
+							content:res.msg,
+							onHide(){
+								if(resp.code > 0){
+									_this.$router.push('/orders');
+									window.sessionStorage.removeItem('cart');
+								}else if(resp.code == 0){
+									_this.$router.push('/loginCaptcha');
+								}
+							}
+						});
+			  		}
+				},
+				error:function(resp){
+					_this.COM.errorCallBack(resp,_this.$vux);
+				}
+			});
+		},
+		toCancel(item){
+			_this.$vux.loading.show({text:'正在取消订单'});
+			jQ.ajax({
+				url:_this.COM.urls.cancelOrder,
+				data:{'orderId':item.id},
+				type:'post',
+				success:function(resp){
+					_this.$vux.alert.show({
+						content:resp.msg,
+						onHide:function(){
+							_this.$router.push('/orders');
+						}
+					})
+				},
+				error:function(resp){
+					_this.COM.errorCallBack(resp,_this.$vux);
+				}
+			});
 		}
 	}
 }

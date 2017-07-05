@@ -11,7 +11,7 @@
 	    </div>
 	    <input type="number" name="" id="" v-model="iptFee" class="own-recharge__input" placeholder="手动输入充值金额"/>
 	    <input type="text" name="" id="" value="" class="own-recharge__input" placeholder="备注" style="color:#888"/>
-	    <button class="own-login__btn" style="margin-top: 30px;margin-bottom: 50px;" @click.prevent="recharge">微信支付</button>
+	    <button class="own-login__btn" style="margin-top: 30px;margin-bottom: 50px;" @click.stop="recharge">微信支付</button>
 	</div>
 </template>
 
@@ -40,7 +40,11 @@ export default{
 			show: false,
 			vipNo: '',
 			phone: '',
-			iptFee: ''
+			iptFee: '',
+			fromType:'',
+			orderId:'',
+			vipFee:'',
+			price:''
 		}
 	},
 	watch:{
@@ -52,6 +56,12 @@ export default{
 			},
 			deep: true
 		}
+	},
+	created(){
+		this.fromType = this.$route.query.fromType;
+		this.orderId = this.$route.query.orderId;
+		this.vipFee = this.$route.query.fee;
+		this.price = this.$route.query.price;
 	},
 	methods:{
 		recharge(){
@@ -91,7 +101,31 @@ export default{
 										success: function (res) {
 											if(res.errMsg == "chooseWXPay:ok" ) {
 												//alert("你点击了确认");
-												_this.$router.push('/home')
+												if(_this.fromType == 'orderPay'){
+													_this.$vux.alert.show({
+														content:'充值成功！将自动为你扣除本次订单金额'+_this.vipFee+'元',
+														onHide:function(){
+															jQ.ajax({
+																url:_this.COM.urls.cartsPayByVip,
+																data:{'orderId':_this.orderId,'fee':_this.vipFee,'price':_this.price},
+																type:'post',
+																success:function(resp){
+																	_this.$vux.alert.show({
+																		content:resp.msg,
+																		onHide:function(){
+																			_this.$router.push('/orders');
+																		}
+																	})
+																},
+																error:function(resp){
+																	_this.COM.errorCallBack(resp,_this.$vux);
+																}
+															});
+														}
+													});
+												}else{
+													_this.$router.push('/vipCards');
+												}
 											} else {
 						
 											}

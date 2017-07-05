@@ -10,7 +10,7 @@
 			    <group title="用餐信息">
 			      <x-input title="人数" type="number" placeholder="请输入用餐人数" v-model="order.people"></x-input>
 			      <datetime v-model="order.eatingTime" :placeholder="meatTime" :min-year=2017 format="YYYY-MM-DD HH:mm" :title="timeTitle" year-row="{value}年" month-row="{value}月" day-row="{value}日" hour-row="{value}点" minute-row="{value}分" confirm-text="确定" cancel-text="取消"></datetime>
-			      <x-input title="餐巾纸(包)" type="number" placeholder="请输入餐巾纸包数" v-model="order.napkins"></x-input>
+			      <x-input title="桌号" type="number" placeholder="请输入桌号" v-model="order.tableNo"></x-input>
 			      <div class="own-checker__box">
 			      	<div class="own-checker__inner">
 			      	  <span>包厢</span>
@@ -42,7 +42,7 @@
 			        </tbody>
 			      </x-table>
 			    </group>
-			    <button class="own-login__btn" style="margin-bottom: 20px;" @click.stop="subOrder">确认并提交订单</button>
+			    <button class="own-login__btn" style="margin-bottom: 20px;" @click.stop="subOrder">确认并支付订单</button>
 			</div>
 		</scroller>
 	</div>
@@ -75,7 +75,7 @@ export default{
 	},
 	data(){
 		return{
-			meatTime:'请输入用餐时间',
+			meatTime:'请选择用餐时间',
 			timeTitle:'用餐时间',
 			orderList:[],
 			order:{
@@ -83,7 +83,7 @@ export default{
 				phone:'',
 				people:'',
 				eatingTime:'',
-				napkins:'',
+				tableNo:'',
 				balcony:'',
 				remark:''
 			},
@@ -91,10 +91,11 @@ export default{
 		}
 	},
 	created(){
-		this.order.eatTime = this.COM.getNowDateTime();
+		this.order.eatTime = this.COM.formatDate();
 		this.orderList = JSON.parse(window.sessionStorage.getItem('cart')) || [];
-		console.log(this.orderList)
+		console.log(this.orderList);
 		this.openId = window.localStorage.getItem("openId") || this.COM.testOpenId;
+		this.order.phone = this.COM.cookie.get('phone') || '';
 	},
 	mounted(){
 	},
@@ -104,15 +105,42 @@ export default{
 		},
 		subOrder(){
 			  let obj = this.order;
-			  if(obj.remark == ''){obj.remark='无'}
+			  /*if(obj.remark == ''){obj.remark='无'}
 			  for(let prop in obj){
-				 if(obj[prop] == undefined || obj[prop] ==''){
+				 if(prop != 'tableNo' && prop != 'balcony' && obj[prop] != undefined && obj[prop] !=''){
+				 	
+				 }else{
 				 	this.$vux.alert.show({
 					    content: '您填写的信息不完整'
 					});
 				 	return 
 				 }
+			  }*/
+			  if(obj.phone == '' || obj.phone == undefined){
+		  		this.$vux.alert.show({
+				    content: '手机号必填'
+				});
+			 	return 
 			  }
+			  if(obj.linkMan == '' || obj.linkMan == undefined){
+		  		this.$vux.alert.show({
+				    content: '联系人必填'
+				});
+			 	return 
+			  }
+			  if(obj.people == '' || obj.people == undefined){
+		  		this.$vux.alert.show({
+				    content: '用餐人数必填'
+				});
+			 	return 
+			  }
+			  if(obj.eatingTime == '' || obj.eatingTime == undefined){
+		  		this.$vux.alert.show({
+				    content: '用餐时间必填'
+				});
+			 	return 
+			  }
+			  
 			  let cartIds = [];
 			  for(let ol of this.orderList){
 			  	cartIds.push(ol.cartId);
@@ -130,7 +158,9 @@ export default{
 			  	success:function(res){
 			  		_this.$vux.loading.hide();
 			  		if(res.code < 0){
-						_this.$vux.toast.show({
+			  			let data = res.data;
+			  			_this.$router.push({path:'/beforePayOrder',query:{'vipFee':data.vipFee,'price':data.price,'orderId':data.orderId}});
+						/*_this.$vux.toast.show({
 							type:'warn',
 							time:2000,
 							text:'您的会员卡余额不足，将为您跳转到微信支付'
@@ -181,7 +211,7 @@ export default{
 									_this.COM.errorCallBack(response,_this.$vux);
 								}
 							});
-						},2000);
+						},2000);*/
 			  		}else{
 			  			_this.$vux.alert.show({
 							content:res.msg,

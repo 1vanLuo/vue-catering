@@ -5,14 +5,15 @@
 		<scroller lock-x height="-45" @on-scroll="onScroll" ref="orderViewScroller">
 			<div>
 				<group title="联系人信息">
-			      <x-input title="姓名" type="text" v-model="order.createUser.name" readonly></x-input>
-			      <x-input title="电话" type="text" v-model="order.createUser.phone" readonly></x-input>
+			      <x-input title="姓名" type="text" v-model="order.linkMan" readonly></x-input>
+			      <x-input title="电话" type="text" v-model="order.phone" readonly></x-input>
 			    </group>
 			    <group title="用餐信息">
-			      <x-input title="人数" type="number" readonly ></x-input>
-			      <x-input title="用餐时间" type="text" readonly ></x-input>
-			      <x-input title="餐巾纸(包)" type="number" readonly ></x-input>
-			      <x-input title="包厢" type="text" readonly ></x-input>
+			      <x-input title="人数" type="number" readonly v-model="order.people"></x-input>
+			      <x-input title="用餐时间" type="text" readonly v-model="order.eatingTime"></x-input>
+			     <!-- <x-input title="餐巾纸(包)" type="number" readonly ></x-input>-->
+			      <x-input title="包厢" type="text" readonly v-if="order.isBalcony == 1" value="是"></x-input>
+			      <x-input title="包厢" type="text" readonly v-if="order.isBalcony == 0" value="否"></x-input>
 			      <group title="酒水饮料请备注">
 				     <x-textarea name="remark" readonly v-model="order.remark"></x-textarea>
 				  </group>
@@ -27,9 +28,9 @@
 			          </tr>
 			        </thead>
 			        <tbody>
-			          <tr v-for="ol in order.orderLists">
+			          <tr v-for="ol in order.orderList">
 			            <td>{{ol.product.name}}</td>
-			            <td>&yen;{{ol.price}}</td>
+			            <td>&yen;{{ol.rebate}}</td>
 			            <td>x {{ol.num}}</td>
 			          </tr>
 			        </tbody>
@@ -61,15 +62,18 @@ export default{
 	},
 	data(){
 		return{
-			order:{},
-			meatTime:'请输入用餐时间',
-			timeTitle:'用餐时间',
-			nowTime:''
+			order:{
+				//eatingTime:1498558140000,
+				//isBalcony:0
+			}
 		}
 	},
 	created(){
 		let jsonStr = window.sessionStorage.getItem('orderView');
-		this.order = JSON.parse(jsonStr);
+		let o = JSON.parse(jsonStr);
+		let eatTime = this.COM.formatDate(o.eatingTime);
+		o.eatingTime = eatTime;
+		this.order = o;
 	},
 	mounted(){
 	},

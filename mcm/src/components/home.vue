@@ -8,6 +8,7 @@
 				<i class="iconfont icon-gerenzhongxin" ref="gr" @click.prevent="toPersonalCenter"></i>
 				<span ref="bage" class="own-header__search__badge">{{count}}</span>
 			</div>
+			<!--<button @click="test">测试</button>-->
 			<swiper ref="sw" :list="banners" auto style="width:100%;margin:0 auto;" :aspect-ratio="400/720" dots-class="custom-bottom" dots-position="right"></swiper>
   		<grid ref="gd">
 	      <grid-item v-for="g in groups">
@@ -24,7 +25,6 @@
 </template>
 
 <script>
-//import { Swiper, Grid, GridItem, Panel, XButton, XHeader, Scroller} from 'vux'
 import {Swiper} from 'vux/src/components/swiper'
 import {Grid, GridItem} from 'vux/src/components/grid'
 import Panel from 'vux/src/components/panel/index.vue'
@@ -183,7 +183,12 @@ export default {
 							    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
 							    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
 							    success: function (res) {
-							    	_this.$router.push({path:'/scanQrcode',query:{id:res.resultStr}})
+							    	let obj = JSON.parse(res.resultStr);
+							    	if(obj.type == 2){
+							    		_this.$router.push({path:'/menuList',query:{companyId:obj.companyId,tableNo:obj.tableNo}});
+							    	}else{
+							    		_this.$router.push({path:'/scanQrcode',query:{id:obj.id}});
+							    	}
 									}
 							});
 						}
@@ -427,6 +432,19 @@ export default {
 	  },
 	  clickItem(item){
 	  	this.$router.push({path:'/productView',query:{id:item.id}});
+	  },
+	  test(){
+	  	let _this = this;
+	  	jQ.ajax({
+	  		url:_this.COM.host + '/weixin/api/test',
+	  		type:'post',
+	  		success:function(res){
+	  			
+	  		},
+	  		error:function(res){
+	  			
+	  		}
+	  	})
 	  }
   }
 }

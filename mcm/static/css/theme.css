@@ -11,6 +11,11 @@ input{
 	outline:none !important;
 	border-radius: 0;
 }
+.ellipsis{
+	text-overflow: ellipsis;
+	white-space: nowrap; 
+	overflow: hidden;
+}
 .weui-grid{
 	padding: 10px 15px !important;
 }
@@ -52,6 +57,13 @@ input{
 	font-size:1.1rem;
 	float: left;
 	line-height: 1.6rem;
+}
+.weui-media-box__vipPrice{
+	color: #AAAAAA;
+	font-size:0.8rem;
+	float: left;
+	line-height: 1.6rem;
+	margin-left: 10px;
 }
 .weui-media-box__btn{
 	font-size: 0.8rem;
@@ -430,6 +442,7 @@ input{
 }
 .own-pv__evaluatediv>.evaluatediv>.namediv>.name{
 	font-size: 0.8rem;
+	font-weight:bold;
 }
 .own-pv__evaluatediv>.evaluatediv>.namediv>.date{
 	font-size: 0.75rem;
@@ -459,23 +472,63 @@ input{
 }
 .own-order__feediv{
 	background-color: #fff;
-	line-height: 1.4rem;
-	border-bottom: 1px solid #ECECEC;
+	height: 3rem;
+	/*border-bottom: 1px solid #ECECEC;*/
+}
+.own-order__feediv .logo{
+	width: 15%;
+	float: left;
+	text-align: center;
+}
+.own-order__feediv .logo img{
+	width: 2.2rem;
+	height: 2.2rem;
 }
 .own-order__feediv .title{
-	font-size: 0.875rem;
+	width: 55%;
+	font-size: 1rem;
+	line-height: 1.4rem;
 	float: left;
+	height: 3rem;
+	border-bottom: 1px solid #ECECEC;
 }
 .own-order__feediv .fee{
-	font-size: 0.875rem;
-	float: right;
+	width: 30%;
+	font-size: 1rem;
+	text-align: right;
+	line-height: 1.4rem;
+	float: left;
+	height: 3rem;
+	border-bottom: 1px solid #ECECEC;
 }
 .own-order__content{
 	font-size: 0.875rem;
 	padding: 10px;
+	border-bottom: 1px solid #ECECEC;
 }
 .own-order__btn{
 	border-top: 1px solid #ECECEC;
+}
+.own-order__btns{
+	padding: 10px 0 0 0;
+}
+.own-order__btns .pay{
+	float: right;
+	border: 1px solid #0077FF;
+	border-radius: 3px;
+	color: #0077FF;
+	padding: 5px;
+	font-size: 0.8rem;
+	margin-left: 10px;
+}
+.own-order__btns .cancel{
+	float: right;
+	border: 1px solid #FF563C;
+	border-radius: 3px;
+	color: #FF563C;
+	padding: 5px;
+	font-size: 0.8rem;
+	margin-left: 10px;
 }
 .own-ev__title{
 	padding: 0 10px;

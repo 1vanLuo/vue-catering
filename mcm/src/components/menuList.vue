@@ -91,6 +91,7 @@ export default{
 					if(response.length > 0){
 						for(let i of response){
 			        		i.img = _this.COM.imgHost + i.img;
+			        		i.num = 1;
 			        		_this.list.push(i);
 			        	}
 			        	_this.$nextTick(() => {
@@ -168,8 +169,6 @@ export default{
 				  		}else{
 				  			_this.$refs.bage.style.display = 'none';
 				  		}
-				  		console.log('=====this.cart=======')
-				  		console.log(_this.cart);
 				  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
 	 	  			}
 	 	  		},

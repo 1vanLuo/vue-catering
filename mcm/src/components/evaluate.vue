@@ -20,6 +20,8 @@ import XHeader from 'vux/src/components/x-header/index.vue'
 import Rater from 'vux/src/components/rater/index.vue'
 import XTextarea from 'vux/src/components/x-textarea/index.vue'
 
+import jQ from 'jquery'
+
 export default{
 	components:{
 		XHeader,
@@ -30,19 +32,21 @@ export default{
 		return{
 			orderList:[],
 			score:0,
-			evaList:[]
+			evaList:[],
+			bizId:''
 		}
 	},
 	created(){
 		let jsonStr = window.sessionStorage.getItem('orderView');
 		let order = JSON.parse(jsonStr) || {};
 		console.log(order)
-		for(let ol of order.orderLists){
+		for(let ol of order.orderList){
 			ol.score = 0;
 			ol.eva = '';
 		}
-		this.orderList = order.orderLists;
-		console.log(this.orderList)
+		this.orderList = order.orderList;
+		this.bizId = order.id;
+		console.log(this.orderList);
 	},
 	methods:{
 		subEva(){
@@ -54,6 +58,7 @@ export default{
 				eva.quality = ol.score;
 				eva.service = ol.score;
 				eva.content = ol.eva;
+				eva.bizId = this.bizId;
 				evas.push(eva);
 			}
 			console.log(evas);
@@ -61,26 +66,29 @@ export default{
 			   text: '正在提交评价'
 			});
 			let _this = this;
-			this.$http.post(this.COM.urls.saveEvaluate,this.COM.postOpt).then(
-				function(res){
-					let rejo = res.body;
-					this.$vux.loading.hide();
-					this.$vux.alert.show({
+			jQ.ajax({
+				url:_this.COM.urls.saveEvaluate,
+				type:'post',
+				data:{evaList:JSON.stringify(evas)},
+				success:function(res){
+					let rejo = res;
+					_this.$vux.loading.hide();
+					_this.$vux.alert.show({
 				        title: '提示',
 				        content: rejo.msg,
 				        onShow () {
 				        },
 				        onHide () {
 				          if(rejo.code > 0){
-				          	this.$router.push('/orderView')
+				          	_this.$router.push('/orderView')
 				          }
 				        }
 				    });
 				},
-				function(res){
-					this.COM.errorCallBack(res,this.$vux);
+				error:function(res){
+					_this.COM.errorCallBack(res,_this.$vux);
 				}
-			)
+			})
 		}
 	}
 }
