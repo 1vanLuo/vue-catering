@@ -54,7 +54,7 @@ export default {
 	    Scroller,
 	    XHeader
   },
-  data () {
+  data(){
     return {
     	sessionStorage: window.sessionStorage,
       banners: baseList,
@@ -186,7 +186,7 @@ export default {
 							    	let obj = JSON.parse(res.resultStr);
 							    	if(obj.type == 2){
 							    		_this.$router.push({path:'/menuList',query:{companyId:obj.companyId,tableNo:obj.tableNo}});
-							    	}else{
+							    	}else if(obj.type == 1){
 							    		_this.$router.push({path:'/scanQrcode',query:{id:obj.id}});
 							    	}
 									}

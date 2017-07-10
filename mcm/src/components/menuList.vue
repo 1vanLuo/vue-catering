@@ -51,13 +51,18 @@ export default{
 		    status:{
 		    	pullupStatus:'default'
 		    },
-		    pageNo:0
+		    pageNo:0,
+		    tableNo:'',
+		    companyId:''
 		}
 	},
 	created(){
 		this.$vux.loading.show({
 			text:'正在加载'
 		})
+		this.tableNo = this.$route.query.tableNo || '';
+		this.companyId = this.$route.query.companyId;
+		window.sessionStorage.setItem('tableNo',this.tableNo);
 	},
 	mounted(){
 	  	let cart = JSON.parse(sessionStorage.getItem('cart')) || [];

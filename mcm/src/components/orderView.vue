@@ -10,8 +10,8 @@
 			    </group>
 			    <group title="用餐信息">
 			      <x-input title="人数" type="number" readonly v-model="order.people"></x-input>
-			      <x-input title="用餐时间" type="text" readonly v-model="order.eatingTime"></x-input>
-			     <!-- <x-input title="餐巾纸(包)" type="number" readonly ></x-input>-->
+			      <x-input title="用餐时间" type="text" readonly v-model="order.appointmentTime"></x-input>
+			      <x-input title="桌号" type="text" readonly v-model="order.tableNo"></x-input>
 			      <x-input title="包厢" type="text" readonly v-if="order.isBalcony == 1" value="是"></x-input>
 			      <x-input title="包厢" type="text" readonly v-if="order.isBalcony == 0" value="否"></x-input>
 			      <group title="酒水饮料请备注">

@@ -13,6 +13,7 @@ urls.getWxSdk = host + '/weixin/api/wxSDK';
 urls.getOpenId = host + '/weixin/api/getOpenId';
 urls.login = host + '/login';
 urls.scanPay = host + '/weixin/api/scanPay';
+urls.scanCustomerOrder = host + '/weixin/scan/wxScan';
 urls.getCoupons = host + '/weixin/api/getCouponListAjax';
 urls.exchangeCoupon = host + '/weixin/api/couponAjaxIns';
 urls.getOrderList = host + '/weixin/api/getCustOrderListBySearch';

@@ -135,7 +135,7 @@ export default{
 			_this.$vux.loading.show({text:'正在支付'});
 			jQ.ajax({
 				url:_this.COM.urls.cartsPayByVip,
-				data:{'orderId':item.id,'fee':item.vipPrice,'price':item.wxPrice},
+				data:{'orderId':item.id,'fee':item.vipPrice,'price':item.retailFee},
 				type:'post',
 				success:function(resp){
 					_this.$vux.loading.hide();

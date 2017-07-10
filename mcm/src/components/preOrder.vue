@@ -9,8 +9,8 @@
 			    </group>
 			    <group title="用餐信息">
 			      <x-input title="人数" type="number" placeholder="请输入用餐人数" v-model="order.people"></x-input>
-			      <datetime v-model="order.eatingTime" :placeholder="meatTime" :min-year=2017 format="YYYY-MM-DD HH:mm" :title="timeTitle" year-row="{value}年" month-row="{value}月" day-row="{value}日" hour-row="{value}点" minute-row="{value}分" confirm-text="确定" cancel-text="取消"></datetime>
-			      <x-input title="桌号" type="number" placeholder="请输入桌号" v-model="order.tableNo"></x-input>
+			      <datetime v-model="order.appointmentTime" :placeholder="meatTime" :min-year=2017 format="YYYY-MM-DD HH:mm" :title="timeTitle" year-row="{value}年" month-row="{value}月" day-row="{value}日" hour-row="{value}点" minute-row="{value}分" confirm-text="确定" cancel-text="取消"></datetime>
+			      <x-input title="桌号" type="text" placeholder="请输入桌号" v-model="order.tableNo"></x-input>
 			      <div class="own-checker__box">
 			      	<div class="own-checker__inner">
 			      	  <span>包厢</span>
@@ -82,7 +82,7 @@ export default{
 				linkMan:'',
 				phone:'',
 				people:'',
-				eatingTime:'',
+				appointmentTime:'',
 				tableNo:'',
 				balcony:'',
 				remark:''
@@ -96,6 +96,7 @@ export default{
 		console.log(this.orderList);
 		this.openId = window.localStorage.getItem("openId") || this.COM.testOpenId;
 		this.order.phone = this.COM.cookie.get('phone') || '';
+		this.order.tableNo = window.sessionStorage.getItem('tableNo') || '';
 	},
 	mounted(){
 	},
@@ -134,7 +135,7 @@ export default{
 				});
 			 	return 
 			  }
-			  if(obj.eatingTime == '' || obj.eatingTime == undefined){
+			  if(obj.appointmentTime == '' || obj.appointmentTime == undefined){
 		  		this.$vux.alert.show({
 				    content: '用餐时间必填'
 				});

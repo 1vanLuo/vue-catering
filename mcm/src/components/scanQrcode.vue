@@ -9,6 +9,7 @@
             	<input ref="num" class="own-xnumber__ipt" readonly="readonly" :value="num" pattern="[0-9]*" type="number" min="1"/>
 		        <div @click.prevent="sub()" class="own-xnumber__btn">-</div>
 		        <div style="color: #FF563C;float: left;"><i class="own-moneysmbol"></i>{{sumPrice}}</div>
+		        <div style="float: left;color:#999;font-size:0.7rem;">会员价：&yen;{{sumPrice}}</div>
 		        <div class="clearfix"></div>
             </div>
             <button style="width:100%;font-size:0.85rem;border:none;height:2.5rem;background-color: #FF563C;
@@ -88,7 +89,7 @@ export default{
 	    	})
 	    	jQ.ajax({
 	    		url:_this.COM.urls.scanPay,
-	    		data:{'openId':openId,'prId':_this.pid,'num':_this.num},
+	    		data:{'openId':openId,'prId':_this.pid,'num':_this.num,'type':1},
 	    		success:function(res){
 	    			_this.$vux.loading.hide();
 	    			if(res.code == 1){
