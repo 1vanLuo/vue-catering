@@ -8,6 +8,7 @@ import VueResource from 'vue-resource'
 Vue.use(VueResource)
 import H5lock from 'H5lock'
 import Com from 'Com'
+import CityData3 from 'CityData3'
 import ToastPlugin from 'vux/src/plugins/toast/index.js'
 import ConfirmPlugin from 'vux/src/plugins/confirm/index.js'
 import LoadingPlugin from 'vux/src/plugins/loading/index.js'
@@ -17,7 +18,8 @@ Vue.use(ToastPlugin)
 Vue.use(ConfirmPlugin)
 Vue.use(AlertPlugin)
 
-Vue.prototype.COM = Com
+Vue.prototype.COM = Com;
+Vue.prototype.CityData3 = CityData3;
 
 FastClick.attach(document.body)
 
