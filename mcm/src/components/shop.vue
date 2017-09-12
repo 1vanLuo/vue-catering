@@ -160,7 +160,7 @@
                 sessionStorage.setItem('cart',JSON.stringify(_this.cart));
                 _this.countSum();
             },
-            addToCart(item){
+            addToCart(item,f){
                 console.log(item);
                 let flag = false;
                 let _cart = this.cart;
@@ -170,7 +170,10 @@
                     console.log(index);
                     let c = _cart[index];
                     if(c.id === item.id){
-                        ++c.num;
+                        c.num += f;
+                        if(c.num == 0){
+                            _cart.splice(index,1);
+                        }
                         flag = true;
                         break;
                     }
@@ -213,24 +216,20 @@
 		   		let item = this.products[index];
 		   		++item.num;
                 item.sum = (item.num * item.price).toFixed(2);
-                this.addToCart(item);
+                this.addToCart(item,1);
                 // this.countSum();
 		   },
 		   subNum(index){
 		   		let item = this.products[index];
 		   		--item.num;
                 item.sum = (item.num * item.price).toFixed(2);
-                if(item.num > 0){
-                    for(let c of this.cart){
-                        if(c.id === item.id){
-                            item.cartId = c.cartId;
-                            break;
-                        }
+                for(let c of this.cart){
+                    if(c.id === item.id){
+                        item.cartId = c.cartId;
+                        break;
                     }
-	    		    this.subCart(item);    
-                }else{
-                    this.delItem(item.id);
                 }
+                this.addToCart(item,-1);    
            },
            delItem(id){
 		   },
