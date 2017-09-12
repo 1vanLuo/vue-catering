@@ -1,8 +1,15 @@
 import Vue from 'vue'
 import Router from 'vue-router'
+<<<<<<< HEAD
 import PersonalCenter from '../components/personalCenter.vue'
 import Register from '../components/register.vue'
 import LoginPassword from '../components/loginPassword.vue'
+=======
+import Home from '../components/home.vue'
+import PersonalCenter from '../components/personalCenter.vue'
+import LoginPassword from '../components/loginPassword.vue'
+import PreOrder1 from '../components/preOrder1.vue'
+>>>>>>> temp
 import LoginGesture from '../components/loginGesture.vue'
 import Orders from '../components/orders.vue'
 import OrderView from '../components/orderView.vue'
@@ -11,6 +18,7 @@ import Setting from '../components/setting.vue'
 import Coupons from '../components/coupons.vue'
 import ResetPassword from '../components/resetPassword.vue'
 import SetGesture from '../components/setGesture.vue'
+<<<<<<< HEAD
 import Home from '../components/home.vue'
 import Shop from '../components/shop.vue'
 import AccountBalance from '../components/accountBalance.vue'
@@ -18,6 +26,14 @@ import DeliverAddress from '../components/deliverAddress.vue'
 import EditAddress from '../components/editAddress.vue'
 import FeedBack from '../components/feedBack.vue'
 import PreOrder1 from '../components/preOrder1.vue'
+=======
+import Shop from '../components/shop.vue'
+import Register from '../components/register.vue'
+import DeliverAddress from '../components/deliverAddress.vue'
+import EditAddress from '../components/editAddress.vue'
+import FeedBack from '../components/feedBack.vue'
+import AccountBalance from '../components/accountBalance.vue'
+>>>>>>> temp
 
 Vue.use(Router)
 
@@ -25,16 +41,27 @@ export default new Router({
   mode:'hash',
   routes: [
     {
+<<<<<<< HEAD
+=======
+      path: '/home',
+      name: 'home',
+      component: Home
+    },
+    {
+>>>>>>> temp
     	path:'/personalCenter',
     	name:'personalCenter',
     	component: PersonalCenter
     },
     {
+<<<<<<< HEAD
     	path:'/register',
     	name:'register',
     	component: Register
     },
     {
+=======
+>>>>>>> temp
     	path:'/loginPassword',
     	name:'loginPassword',
     	component: LoginPassword
@@ -45,6 +72,14 @@ export default new Router({
     	component: LoginGesture
     },
     {
+<<<<<<< HEAD
+=======
+    	path:'/preOrder1',
+    	name:'preOrder1',
+    	component: PreOrder1
+    },
+    {
+>>>>>>> temp
     	path:'/orders',
     	name:'orders',
     	component: Orders
@@ -79,40 +114,35 @@ export default new Router({
     	name:'setGesture',
     	component: SetGesture
     },
-	{
-		path:'/home',
-    	name:'home',
-    	component: Home
-	},
-	{
-		path:'/shop',
+    {
+    	path:'/shop',
     	name:'shop',
     	component: Shop
-	},
-	{
-		path:'/accountBalance',
-    	name:'accountBalance',
-    	component: AccountBalance
-	},
-	{
-		path:'/deliverAddress',
+    },
+    {
+    	path:'/register',
+    	name:'register',
+    	component: Register
+    },
+    {
+    	path:'/deliverAddress',
     	name:'deliverAddress',
     	component: DeliverAddress
-	},
-	{
-		path:'/editAddress',
+    },
+    {
+    	path:'/editAddress',
     	name:'editAddress',
     	component: EditAddress
-	},
-	{
-		path:'/feedBack',
+    },
+    {
+    	path:'/feedBack',
     	name:'feedBack',
     	component: FeedBack
-	},
-	{
-		path:'/preOrder1',
-    	name:'preOrder1',
-    	component: PreOrder1
-	}
+    },
+    {
+    	path:'/accountBalance',
+    	name:'accountBalance',
+    	component: AccountBalance
+    }
   ]
 })
