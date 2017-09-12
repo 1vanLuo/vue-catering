@@ -66,33 +66,7 @@ export default{
 			   text: '正在提交评价'
 			});
 			let _this = this;
-<<<<<<< HEAD
 			
-=======
-			jQ.ajax({
-				url:_this.COM.urls.saveEvaluate,
-				type:'post',
-				data:{evaList:JSON.stringify(evas)},
-				success:function(res){
-					let rejo = res;
-					_this.$vux.loading.hide();
-					_this.$vux.alert.show({
-				        title: '提示',
-				        content: rejo.msg,
-				        onShow () {
-				        },
-				        onHide () {
-				          if(rejo.code > 0){
-				          	_this.$router.push('/orderView')
-				          }
-				        }
-				    });
-				},
-				error:function(res){
-					_this.COM.errorCallBack(res,_this.$vux);
-				}
-			})
->>>>>>> temp
 		}
 	}
 }
