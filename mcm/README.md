@@ -8,6 +8,8 @@
 # install dependencies
 npm install
 
+# 初始化项目之后需要把src\components\comp\index.vue覆盖掉node_modules\vux\src\components\panel\index.vue
+
 # serve with hot reload at localhost:8080
 npm run dev
 
