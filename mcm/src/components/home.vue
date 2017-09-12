@@ -1,434 +1,224 @@
 <template>
-  <div>
-  		<div ref="dot" class="own-cart__dot"></div>
-	  	<div class="own-header__search" ref="se">
-				<input class="own-header__search__input" type="search" name="search" ref="search" v-model="pName" placeholder="搜索菜品" @keyup="searchProduct"/>
-				<i class="iconfont icon-saoyisao" @click.self="toScanQrcode"></i>
-				<i class="iconfont icon-fancai" ref="dc" @click.prevent="toCart"></i>
-				<i class="iconfont icon-gerenzhongxin" ref="gr" @click.prevent="toPersonalCenter"></i>
-				<span ref="bage" class="own-header__search__badge">{{count}}</span>
-			</div>
-			<swiper ref="sw" :list="banners" auto style="width:100%;margin:0 auto;" :aspect-ratio="400/720" dots-class="custom-bottom" dots-position="right"></swiper>
-  		<grid ref="gd">
-	      <grid-item v-for="g in groups">
-	        <span slot="label" @click.prevent="clickGroup(g)">{{g.name}}</span>
-	      </grid-item>
-    	</grid>
-		  <Scroller lock-x @on-scroll="onScroll" ref="homeScroller">
-				<div>
-					<panel header="精品菜单" :footer="footer" :list="list" :type="type" v-on:on-click-btn="addToCart" 
-						v-on:on-click-item="clickItem"></panel>
-				</div>
-			</Scroller>
-  </div>
+    <div>
+        <div class="own-yiye__top" ref="topDiv">
+            <div class="own-yiye__top-loc">
+                <i class="iconfont icon-dingwei" style="color:#fff;margin-top:-3px;vertical-align:text-top;"></i>
+                <span class="own-yiye__top-loctext" @click="showAddrPicker()">{{loc}}</span>
+            </div>
+            <div style="margin-top:10px;">
+                <div style="float:right;width:10%;line-height:1.8rem" @click="toPersonalCenter">
+                    <i class="iconfont icon-gerenzhongxin" style="color:#fff;font-size:1.5rem"></i>
+                </div>
+                <input class="own-yiye__top-search" placeholder="搜索商家" v-model="search">
+            </div>
+        </div>
+        <div>
+            <scroller height="-85" lock-x @on-scroll="onScroll" ref="shopScroller" v-model="status" :pullup-config="pullUp" @on-pullup-loading="pullupRefresh" :use-pullup=true @on-scroll-bottom="onScrollBottom">
+                <div>
+                    <panel :list="shops" :type="type" v-on:on-click-item="toShop"></panel>
+                </div>
+            </scroller>
+        </div>
+        <AddressPicker :show="isShow" :default="defaultCity" :showDistrict="showDis" :data="cityList" :commonCitys="commonCitys" v-on:on-hide="hide">
+
+        </AddressPicker>
+    </div>
 </template>
 
 <script>
-//import { Swiper, Grid, GridItem, Panel, XButton, XHeader, Scroller} from 'vux'
-import {Swiper} from 'vux/src/components/swiper'
-import {Grid, GridItem} from 'vux/src/components/grid'
-import Panel from 'vux/src/components/panel/index.vue'
-import XButton from 'vux/src/components/x-button/index.vue'
-import XHeader from 'vux/src/components/x-header/index.vue'
 import Scroller from 'vux/src/components/scroller/index.vue'
-import wx from 'wx'
+import Panel from 'vux/src/components/panel/index.vue'
+import AddressPicker from './comp/pickAddress.vue'
+
 import jQ from 'jquery'
-const baseList = [{
-  img: '../../static/images/p2.jpg',
-  title: '最新推出'
-}, {
-  img: '../../static/images/p3.jpg',
-  title: '店长推荐'
-}, {
-  img: '../../static/images/p4.jpg',
-  title: '优惠活动'
-}]
 
 export default {
-  components: {
-	    Swiper,
-	    Grid,
-	    GridItem,
-	    Panel,
-	    XButton,
-	    Scroller,
-	    XHeader
-  },
-  data () {
-    return {
-    	sessionStorage: window.sessionStorage,
-      banners: baseList,
-      groups:[],
-      pName: '',
-      type:'4',
-      /*list: [{
-        src: 'http://placeholder.qiniudn.com/60x60/3cc51f/ffffff',
-        title: '孜然牛肉',
-        desc: '上等黄牛肉',
-        price: '30.00',
-        btn: '来 一 份'
-      }],*/
-     	list:[],
-     	openId:'',
-      footer: {
-        title: '查看更多',
-        url: '/menuList'
-      },
-      cart: [],
-      count: 0,
-      wxSDK:{},
-      arr:[]
-    }
-  },
-  created(){
-  	let _this = this;
-  	let _openId = _this.COM.testOpenId;
-  	_this.openId = _openId;
-  	jQ.ajax({
-  		url:_this.COM.urls.banners,
-  		type:'post',
-			success:function(response){
-				let jo = response;
-				if(jo.length > 0){
-					this.banners = jo;
-				}
-	    },
-	    error:function(res){
-	       _this.COM.errorCallBack(res,_this.$vux);
-	    }
-    });
-		jQ.ajax({
-			url:_this.COM.urls.product,
-			type:'post',
-			data:{'pageNo':1},
-			success:function(response){
-        _this.list = response;
-        for(let i of _this.list){
-        	let src = i.img;
-        	i.num = 1;
-        	i.img = _this.COM.imgHost + src;
+    components: {
+        Scroller,
+        Panel,
+        AddressPicker
+    },
+    data() {
+        return {
+            geo: {},
+            defaultCity: '长沙市',
+            loc: '长沙市',
+            areaCode: '',
+            cityList: [],
+            commonCitys: this.COM.commoncitys,
+            isShow: false,
+            showDis: true,
+            addr: ['430000', '430100', '430102'],
+            search: '',
+            type: '7',
+            shops: [],
+            wxSDK: {},
+            pageNo: 0,
+            groupId: '',
+            prId: '',
+            pullUp: {
+                content: '',
+                pullUpHeight: 100,
+                height: 40,
+                autoRefresh: false,
+                downContent: '释放后加载',
+                upContent: '上拉加载更多',
+                loadingContent: '加载中...',
+                clsPrefix: 'xs-plugin-pullup-'
+            },
+            status: {
+                pullupStatus: 'default'
+            },
         }
-	    },
-	    error:function(res){
-	        _this.COM.errorCallBack(res,_this.$vux);
-	    }
-    });
-		jQ.ajax({
-			url:_this.COM.urls.group,
-			type:'post',
-			success:function(response){
-        _this.groups = response.body;
-	    },
-	    error:function(res){
-	      _this.COM.errorCallBack(res,_this.$vux);
-	    }
-    });
-		/*jQ.ajax({
-			url:_this.COM.urls.getCarts,
-			type:'post',
-			data:{'openId':_openId},
-			success:function(data){
-				if(data.code > 0){
-					let carts = data.data.carts;
-					console.log('----carts-----')
-					console.log(carts)
-					let _cart = [];
-					for(let c of carts){
-						let _c = {};
-						_c.cartId = c.id;
-						_c.id = c.productReleaseId;
-						_c.num = c.num;
-						_c.name = c.name;
-						_c.img = _this.COM.imgHost + c.img;
-						_c.desc = c.desc;
-						_c.price = c.price;
-						_cart.push(_c);
-					}
-					window.sessionStorage.setItem('cart',JSON.stringify(_cart));
-					_this.cart = _cart;
-					console.log('------_this.cart-------');
-					console.log(_this.cart);
-					_this.count = _cart.length;
-					console.log(_this.count);
-				}
-			},
-			error:function(res){
-				_this.COM.errorCallBack(res,_this.$vux);
-			}
-		})*/
-    let url = window.location.href;
-	  jQ.ajax({
-	  	url:_this.COM.urls.getWxSdk,
-	  	type:'post',
-	  	data:{'url':url},
-			success:function(response){
-        _this.wxSDK = response;
-        wx.config({
-				    debug: false, // 开启调试模式,调用的所有api的返回值会在客户端alert出来，若要查看传入的参数，可以在pc端打开，参数信息会通过log打出，仅在pc端时才会打印。
-				    appId: _this.wxSDK.appId, // 必填，公众号的唯一标识
-				    timestamp: _this.wxSDK.timestamp, // 必填，生成签名的时间戳
-				    nonceStr: _this.wxSDK.noncestr, // 必填，生成签名的随机串
-				    signature: _this.wxSDK.signature,// 必填，签名，见附录1
-				    jsApiList: ['scanQRCode','getLocation'] // 必填，需要使用的JS接口列表，所有JS接口列表见附录2
-				});
-				wx.ready(function(){
-					  wx.getLocation({
-							type: 'wgs84', // 默认为wgs84的gps坐标，如果要返回直接给openLocation用的火星坐标，可传入'gcj02'
-							success: function (res) {
-								console.log('当前位置：'+res.latitude+','+res.longitude);
-							}
-						});
-						_this.toScanQrcode = function(){
-							wx.scanQRCode({
-							    needResult: 1, // 默认为0，扫描结果由微信处理，1则直接返回扫描结果，
-							    scanType: ["qrCode","barCode"], // 可以指定扫二维码还是一维码，默认二者都有
-							    success: function (res) {
-							    	_this.$router.push({path:'/scanQrcode',query:{id:res.resultStr}})
-									}
-							});
-						}
-				})
-	    },
-	    error:function(res){
-	       _this.COM.errorCallBack(res,_this.$vux);
-	    }
-    });
-		this.arr = [{num:0}];
-  },
-  mounted: function(){
-  	let _this = this;
-  	let _openId = _this.COM.testOpenId;
-  	jQ.ajax({
-			url:_this.COM.urls.getCarts,
-			type:'post',
-			data:{'openId':_openId},
-			success:function(data){
-				if(data.code > 0){
-					let carts = data.data.carts;
-					let _cart = [];
-					for(let c of carts){
-						let _c = {};
-						_c.cartId = c.id;
-						_c.id = c.productReleaseId;
-						_c.num = c.num;
-						_c.name = c.name;
-						_c.img = _this.COM.imgHost + c.img;
-						_c.desc = c.desc;
-						_c.price = c.price;
-						_c.vipPrice = c.vipPrice;
-						_cart.push(_c);
-					}
-					window.sessionStorage.setItem('cart',JSON.stringify(_cart));
-					_this.cart = _cart;
-					let ct = 0;
-					for(let i of _this.cart){
-						ct += i.num;
-					}
-					_this.count = ct;
-					if(_this.count > 0){
-						_this.$refs.bage.style.display = 'block';
-					}else{
-						_this.$refs.bage.style.display = 'none';
-					}
-				}
-			},
-			error:function(res){
-				_this.COM.errorCallBack(res,_this.$vux);
-			}
-		})
-  	
-		/*let ct = 0;
-		for(let i of _this.cart){
-			console.log('-------i------')
-			console.log(i)
-			ct += i.num;
-		}
-		this.count = ct;
-		if(this.count > 0){
-			console.log(this.count)
-			this.$refs.bage.style.display = 'block';
-		}else{
-			this.$refs.bage.style.display = 'none';
-		}*/
-  	this.$nextTick(() => {
-		  let seHeight = this.$refs.se.offsetHeight;
-		  let swHeight = window.innerWidth / 1.8;
-		  let gdHeight = this.$refs.gd.$el.offsetHeight;
-		  let scHeight = window.innerHeight - seHeight - swHeight - gdHeight;
-		  let sc = this.$refs.homeScroller;
-		  sc.$el.style.height = scHeight + 'px';
-		  sc.reset({top: 0})
-		});
-  },
-  watch:{
-  },
-  methods: {
-  	cartSave(c){
-  		//let cartList = [];
-  		/*let _this = this;
- 	  	for(let c of list){
- 	  		let item = {};
- 	  		let productRelease = {};
- 	  		productRelease.id = c.id;
- 	  		item.productRelease = productRelease;
- 	  		item.num = c.num;
- 	  		cartList.push(item);
- 	  	}
- 	  	let _list = {};
- 	  	_list.list = cartList;*/
- 	  	console.log(c)
- 	  	let _this = this;
- 	  	let para = {};
- 	  	let pr = {};
- 	  	pr.id = c.id;
- 	  	para.productRelease = pr;
- 	  	if(c.hasOwnProperty('cartId')){
- 	  		para.cartId = c.cartId;
- 	  	}
- 	  	para.num = c.num;
- 	  	jQ.ajax({
- 	  		url:_this.COM.urls.cartSave,
- 	  		type:'post',
- 	  		data:{'cart':JSON.stringify(para),'openId':_this.openId},
- 	  		success:function(res){
- 	  			_this.$vux.loading.hide();
- 	  			if(res.code > 0){
- 	  				let cartId = res.data;
- 	  				let f = false;
- 	  				let len = _this.cart.length
- 	  				for(let i=0; i<len; i++){
- 	  					let item = _this.cart[i];
-			  			if(item.cartId === cartId){
-			  				++item.num;
-			  				_this.cart.splice(i,1,item);
-			  				f = true;
-			  				break;
-			  			}
-			  		}
- 	  				if(!f){
- 	  					c.cartId = cartId;
- 	  					_this.cart.splice(len,0,c);
- 	  				}
- 	  				
- 	  				let ct = 0;
-			  		for(let i of _this.cart){
-			  			ct += i.num;
-			  		}
-			  		_this.count = ct;
-			  		if(_this.count > 0){
-			  			_this.$refs.bage.style.display = 'block';
-			  		}else{
-			  			_this.$refs.bage.style.display = 'none';
-			  		}
-			  		console.log('=====this.cart=======')
-			  		console.log(_this.cart);
-			  		sessionStorage.setItem('cart',JSON.stringify(_this.cart));
- 	  			}
- 	  		},
- 	  		error:function(res){
- 	  			_this.COM.errorCallBack(res,_this.$vux);
- 	  		}
- 	  	});
-  	},
-  	isEmptyObject(e) {  
-		    var t;  
-		    for (t in e)  
-		        return !1;  
-		    return !0  
-		},
-  	toCart(){
-  		this.$router.push({path:'/cart'});
-  	},
-  	toScanQrcode(){
-  		//this.$router.push({path:'/scanQrcode',query:{id:'3413096687977472'}})
-  	},
-  	toPersonalCenter(){
-  		this.$router.push({path:'/personalCenter'});
-  	},
-  	onScroll(pos) {
-      this.scrollTop = pos.top
-	  },
-	  showDot(el){
-	  	let fromY = el.getBoundingClientRect().top;
-	  	let fromX = el.getBoundingClientRect().left + 10;
-	  	let dc = this.$refs.dc;
-	  	let endY = dc.getBoundingClientRect().top;
-	  	let endX = dc.getBoundingClientRect().left;
-	  	let dot = this.$refs.dot;
-	  	dot.style.top = fromY + 'px';
-	  	dot.style.left = fromX + 'px';
-	  	dot.style.display = 'block';
-	  	let flag;
-	  	let reX = endX - fromX;
-	  	let reY = endY - fromY;
-	  	clearInterval(flag);
-  		flag = setInterval(function(){
-  			fromY = (reY / 100) + fromY;
-  			fromX = (reX / 100) + fromX;
-  			dot.style.top = fromY + 'px';
-  			dot.style.left = fromX + 'px'
-  			if(fromX >= endX || fromY <= endY){
-  				dot.style.display = 'none';
-  				dot.style.top = '0px';
-	  			dot.style.left = '0px';
-  				clearInterval(flag);
-  			}
-  		},6);
-	  },
-	  addToCart(item){
-	  	console.log(item)
-	  	let flag = false;
-	  	let len = this.cart.length;
-	  	let _cart = this.cart;
-	  	let _c = {};
-	  	for(let index=0; index<len; index++){
-	  		console.log(index);
-	  		let c = _cart[index];
-	  		if(c.id === item.id){
-	  			let num = c.num + 1;
-	  			_c.cartId = c.cartId;
-	  			_c.id = c.id;
-	  			_c.num = num;
-	  			_c.desc = c.desc;
-	  			_c.img = c.img;
-	  			_c.name = c.name;
-	  			_c.price = c.price;
-	  			_c.vipPrice = c.vipPrice;
-	  			flag = true;
-	  			break;
-	  		}
-	  	}
-	  	if(!flag){
-	  		_c.id = item.id;
-  			_c.num = item.num;
-  			_c.img = item.img;
-  			_c.desc = item.desc;
-  			_c.name = item.name;
-  			_c.price = item.price;
-  			_c.vipPrice = item.vipPrice;
-	  	}
-  		this.showDot(event.currentTarget);
-			this.cartSave(_c);
-	  },
-	  clickGroup(g){
-	  	console.log(g.id)
-	  	this.$router.push({path:'/menuList',query:{groupId:g.id}});
-	  },
-	  searchProduct(){
-	  	console.log(this.pName)
-	  	this.$http.post(this.COM.urls.product,{pageNo:1,pName:this.pName},{emulateJSON:true,responseType:'json'}).then(
-				function(response){
-	        this.list = response.body;
-	        console.log(response)
-		    },function(res){
-		        this.COM.errorCallBack(res,this.$vux);
-		    }
-	    )
-	  },
-	  clickItem(item){
-	  	this.$router.push({path:'/productView',query:{id:item.id}});
-	  }
-  }
+    },
+    created() {
+        this.prId = this.$route.query.productId;
+        this.groupId = this.$route.query.productGroup;
+        this.$vux.loading.show({
+            text: '正在定位'
+        });
+        for (let c of this.CityData3.citys) {
+            let cc = c.children;
+            for (let i of cc) {
+                this.cityList.push(i);
+            }
+        }
+        let _this = this;
+        let url = window.location.href;
+
+        let count = 0;
+        let flag = false;
+        let t = setInterval(function() {
+            ++count;
+            if (count < 2) {
+                if (!jQ.isEmptyObject(_this.geo)) {
+                    clearInterval(t);
+                }
+            } else {
+                flag = _this.geoAddrByIp();
+                clearInterval(t);
+            }
+        }, 1000);
+    },
+    mounted() {
+    },
+    watch: {
+        geo(val) {
+            let _this = this;
+            console.log('geo===')
+            console.log(val);
+            window.sessionStorage.setItem('location', JSON.stringify(val));
+            let point = new BMap.Point();
+            point.lat = val.lat;
+            point.lng = val.lng;
+            let geoc = new BMap.Geocoder();
+            geoc.getLocation(point, function(rs) {
+                let addComp = rs.addressComponents;
+                console.log(addComp);
+                let city = addComp.city;
+                _this.loc = city;
+                for (let c of _this.CityData3.citys) {
+                    let cc = c.children;
+                    for (let i of cc) {
+                        if (i.text.indexOf(city) >= 0) {
+                            _this.areaCode = i.value;
+                            break;
+                        }
+                    }
+                }
+            });
+        },
+        areaCode(val) {
+            this.shops = [];
+            this.pageNo = 0;
+            this.status.pullupStatus = 'enabled';
+            this.pullupRefresh(0);
+        }
+    },
+    methods: {
+        pullupRefresh(flag) {
+            let _this = this;
+            _this.$vux.loading.show({
+                text: '正在加载'
+            });
+            _this.pageNo++;
+            setTimeout(function(){
+                _this.$vux.loading.hide();
+                for(let i=1; i<=10; i++){
+                    let shop = {};
+                    shop.id = (_this.pageNo - 1) * 10 + i;
+                    shop.name = '示例店铺';
+                    shop.desc = '店铺描述';
+                    shop.sales = '999';
+                    shop.dis = '1.45';
+                    //shop.img = 'http://ove4dmu8g.bkt.clouddn.com/dianpu.jpg?e=1504594844&token=nJe3NBBcYvy5mLdKmfnWMaS_qehE78Z2ela0bpSs:8xjAf6wd_aofNJxmPpcosMKaFg0=';
+                    shop.img = 'http://ove4dmu8g.bkt.clouddn.com/dianpu.jpg';
+                    _this.shops.push(shop);
+                }
+                _this.$nextTick(() => {
+                    let sc = _this.$refs.shopScroller;
+                    sc.reset();
+                });
+                _this.status.pullupStatus = 'enabled';
+            },1000);
+        },
+        onScrollBottom() {
+            if (this.status.pullupStatus == 'disabled') {
+                this.$vux.toast.show({
+                    type: 'text',
+                    text: '没有更多了',
+                    position: 'bottom'
+                })
+            }
+        },
+        getGeo() {
+        },
+        onScroll(pos) {
+            this.scrollTop = pos.top
+        },
+        toShop(item) {
+            window.sessionStorage.setItem('theShop',JSON.stringify(item));
+            this.$router.push({ path: '/shop'});
+        },
+        showAddrPicker() {
+            this.isShow = true;
+            console.log(this.isShow)
+        },
+        hide(item) {
+            console.log(item);
+            this.isShow = false;
+            if (item != '' && item != 'undefined') {
+                this.loc = item.text;
+                this.areaCode = item.value;
+                console.log(item.value);
+            } else {
+            }
+        },
+        toPersonalCenter() {
+            this.$router.push({ path: '/personalCenter'});
+        },
+        geoAddrByIp(t) {
+            let flag = false;
+            let _this = this;
+            let geolocation = new BMap.Geolocation();
+            geolocation.getCurrentPosition(function(r) {
+                if (this.getStatus() == BMAP_STATUS_SUCCESS) {
+                    let bdLat = r.point.lat;
+                    let bdLng = r.point.lng;
+                    console.log('您的位置：' + bdLng + ',' + bdLat);
+                    _this.geo = r.point;
+                    flag = true;
+                }
+                else {
+                    _this.$vux.alert.show({
+                        content: '定位失败:' + this.getStatus()
+                    });
+                    flag = false;
+                }
+            }, { enableHighAccuracy: true });
+            return flag;
+        }
+    }
 }
 </script>
 

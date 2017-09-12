@@ -4,37 +4,27 @@
 		<x-header :left-options="{backText: ''}" ref="hb">订单详情</x-header>
 		<scroller lock-x height="-45" @on-scroll="onScroll" ref="orderViewScroller">
 			<div>
-				<group title="联系人信息">
-			      <x-input title="姓名" type="text" v-model="order.createUser.name" readonly></x-input>
-			      <x-input title="电话" type="text" v-model="order.createUser.phone" readonly></x-input>
-			    </group>
-			    <group title="用餐信息">
-			      <x-input title="人数" type="number" readonly ></x-input>
-			      <x-input title="用餐时间" type="text" readonly ></x-input>
-			      <x-input title="餐巾纸(包)" type="number" readonly ></x-input>
-			      <x-input title="包厢" type="text" readonly ></x-input>
-			      <group title="酒水饮料请备注">
-				     <x-textarea name="remark" readonly v-model="order.remark"></x-textarea>
-				  </group>
-			    </group>
-			    <group title="已点菜单">
-			      <x-table :cell-bordered="false" style="background-color:#fff;">
-			        <thead>
-			          <tr>
-			            <th>菜名</th>
-			            <th>单价</th>
-			            <th>数量</th>
-			          </tr>
-			        </thead>
-			        <tbody>
-			          <tr v-for="ol in order.orderLists">
-			            <td>{{ol.product.name}}</td>
-			            <td>&yen;{{ol.price}}</td>
-			            <td>x {{ol.num}}</td>
-			          </tr>
-			        </tbody>
-			      </x-table>
-			    </group>
+				<group title="配送信息">
+					<cell :title="deliveryAddress.nameAndPhone" :inline-desc="deliveryAddress.address"></cell>
+				</group>
+				<group title="商品信息">
+					<x-table :cell-bordered="false" style="background-color:#fff;">
+						<thead>
+							<tr>
+								<th>菜名</th>
+								<th>单价</th>
+								<th>数量</th>
+							</tr>
+						</thead>
+						<tbody>
+							<tr v-for="ol in order.orderList">
+								<td>{{ol.product.name}}</td>
+								<td>&yen;{{ol.rebate}}</td>
+								<td>x {{ol.num}}</td>
+							</tr>
+						</tbody>
+					</x-table>
+				</group>
 			</div>
 		</scroller>
 	</div>
@@ -48,59 +38,67 @@ import XInput from 'vux/src/components/x-input/index.vue'
 import XTextarea from 'vux/src/components/x-textarea/index.vue'
 import XTable from 'vux/src/components/x-table/index.vue'
 import Datetime from 'vux/src/components/datetime/index.vue'
+import Cell from 'vux/src/components/cell/index.vue'
+import CellBox from 'vux/src/components/cell-box/index.vue'
 
-export default{
-	components:{
+export default {
+	components: {
 		XHeader,
 		Scroller,
 		Group,
 		XInput,
 		XTextarea,
 		XTable,
-		Datetime
+		Datetime,
+		Cell,
+		CellBox
 	},
-	data(){
-		return{
-			order:{},
-			meatTime:'请输入用餐时间',
-			timeTitle:'用餐时间',
-			nowTime:''
+	data() {
+		return {
+			order: {
+			},
+			deliveryAddress: {}
 		}
 	},
-	created(){
+	created() {
 		let jsonStr = window.sessionStorage.getItem('orderView');
-		this.order = JSON.parse(jsonStr);
+		let o = JSON.parse(jsonStr);
+		this.order = o;
+		this.deliveryAddress = o.deliveryAddress;
+		this.deliveryAddress.nameAndPhone = o.deliveryAddress.name + ' ' + o.deliveryAddress.phone;
 	},
-	mounted(){
+	mounted() {
 	},
-	methods:{
+	methods: {
 		onScroll(pos) {
-	      this.scrollTop = pos.top
+			this.scrollTop = pos.top
 		},
-		toEvaluate(){
-			this.$router.push({path:'/evaluate'});
+		toEvaluate() {
+			this.$router.push({ path: '/evaluate' });
 		}
 	}
 }
 </script>
 <style scoped>
 .demo2-item {
-  width: 1.6rem !important;
-  height: 1.6rem !important;
-  border: 2px solid #ccc;
-  display: inline-block;
-  border-radius: 50%;
-  line-height: 1.2rem;
-  text-align: center;
-  font-size: 0.75rem;
-  box-sizing: border-box;
+	width: 1.6rem !important;
+	height: 1.6rem !important;
+	border: 2px solid #ccc;
+	display: inline-block;
+	border-radius: 50%;
+	line-height: 1.2rem;
+	text-align: center;
+	font-size: 0.75rem;
+	box-sizing: border-box;
 }
+
 .demo2-item-selected {
-  border-color: #FF563C;
-  background-color: #FF563C;
-  color: #fff;
+	border-color: #FF563C;
+	background-color: #FF563C;
+	color: #fff;
 }
-.vux-checker-box{
+
+.vux-checker-box {
 	position: absolute !important;
 	width: 60% !important;
 	right: 10% !important;

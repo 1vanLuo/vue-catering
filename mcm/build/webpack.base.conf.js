@@ -30,6 +30,7 @@ let webpackConfig = {
       '@': resolve('src'),
       'H5lock': path.resolve(__dirname, '../static/js/H5lock.publish.js'),
       'Com': path.resolve(__dirname, '../static/js/common.js'),
+      'CityData3': path.resolve(__dirname, '../static/js/city.data-3.js'),
       'jquery':'jquery/dist/jquery.min.js',
       'wx':'weixin-js-sdk'
     }
@@ -75,6 +76,7 @@ module.exports = vuxLoader.merge(webpackConfig, {
 		  	new webpack.ProvidePlugin({
 		        H5lock: "H5lock",
 		        Com: "Com",
+		        CityData3: "CityData3",
 		        $: "jquery",
 		        jQuery: "jquery",
 		        jQ: "jquery",

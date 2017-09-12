@@ -9,11 +9,20 @@
 		</div>
 		<Scroller lock-x @on-scroll="onScroll" ref="pcScroller">
 			<group >
-		      <cell title="我的订单" is-link link="/orders">
-		      	<i slot="icon" class="iconfont icon-dingdan" style="display:block;margin-right:5px;font-size: 1.1rem;color:#007aff"></i>
+		      <cell title="账户余额" is-link link="/accountBalance">
+		      	<i slot="icon" class="iconfont icon-zhanghuyue" style="display:block;margin-right:5px;font-size: 1.2rem;color:rgb(60, 197, 31)"></i>
 		      </cell>
 		      <cell title="我的优惠券" is-link link="/coupons">
 		      	<i slot="icon" class="iconfont icon-youhuiquan1" style="display:block;margin-right:5px;font-size: 1.2rem;color:#ffc636"></i>
+		      </cell>
+		      <cell title="我的订单" is-link link="/orders">
+		      	<i slot="icon" class="iconfont icon-dingdan" style="display:block;margin-right:5px;font-size: 1.1rem;color:#007aff"></i>
+		      </cell>
+			  <cell title="收货地址" is-link link="/deliverAddress">
+		      	<i slot="icon" class="iconfont icon-shouhuodizhi" style="display:block;margin-right:5px;font-size: 1.2rem;color:#c568f5"></i>
+		      </cell>
+		      <!-- <cell title="我的消费记录" is-link link="/consumes">
+		      	<i slot="icon" class="iconfont icon-xiaofeimingxi" style="display:block;margin-right:5px;font-size: 1.1rem;color:#e81818"></i>
 		      </cell>
 		      <cell title="会员卡信息" is-link link="/vipCards">
 		      	<i slot="icon" class="iconfont icon-huiyuanxinxi" style="display:block;margin-right:5px;font-size: 1.2rem;color:#c568f5"></i>
@@ -21,9 +30,12 @@
 		      <cell title="会员充值" is-link link="/recharge">
 		      	<i slot="icon" class="iconfont icon-chongzhi" style="display:block;margin-right:5px;font-size: 1.2rem;color:#3ac2db"></i>
 		      </cell>
-		      <!--<cell title="个人信息" is-link>
-		      	<i slot="icon" class="iconfont icon-gerenxinxi" style="display:block;margin-right:5px;font-size: 1.2rem;color:#3cc51f"></i>
-		      </cell>-->
+		      <cell title="推广二维码" is-link link="/toQrCode">
+		      	<i slot="icon" class="iconfont icon-erweima1" style="display:block;margin-right:5px;font-size: 1.2rem;color:#3cc51f"></i>
+		      </cell>
+			  <cell title="客户管理" is-link link="/customerList">
+		      	<i slot="icon" class="iconfont icon-kehuguanli" style="display:block;margin-right:5px;font-size: 1.1rem;color:#007aff"></i>
+		      </cell> -->
 		      <cell title="设置" is-link link="/setting">
 		      	<i slot="icon" class="iconfont icon-shezhi" style="display:block;margin-right:5px;font-size: 1.2rem;color:#f56a00"></i>
 		      </cell>

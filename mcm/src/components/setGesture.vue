@@ -11,7 +11,6 @@
 <script>
 import XHeader from 'vux/src/components/x-header/index.vue'
 
-import jQ from 'jquery'
 
 export default{
 	components:{
@@ -38,26 +37,12 @@ export default{
 			  			_this.$vux.loading.show({
 						   text: '正在保存'
 						});
-						jQ.ajax({
-							url:_this.COM.urls.setGesture,
-							type:'post',
-							data:{'pwd':psw},
-							success:function(res){
-								_this.$vux.loading.hide();
-								_this.$vux.alert.show({
-									content:res.msg,
-									onHide(){
-										if(res.code > 0){
-											_this.$router.push('/setting');
-										}
-									}
-								})
-								
-							},
-							error:function(res){
-								_this.COM.errorCallBack(res,_this.$vux);
-							}
-						})
+						setTimeout(function() {
+							_this.$vux.alert.show({
+								content:'保存成功！'
+							})
+							_this.$vux.loading.hide();
+						}, 1000);
 			  		}else{
 			  			  arr.length = 0;
 			  				_this.$vux.toast.show({

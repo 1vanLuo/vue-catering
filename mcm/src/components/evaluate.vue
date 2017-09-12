@@ -11,7 +11,7 @@
 					v-model="ol.eva"></textarea>
 			</div>
 		</div>
-		<button class="own-login__btn" style="margin-bottom: 20px;" @click="subEva">提交评价</button>
+		<button class="own-login__btn" style="margin-bottom: 20px;" @click="subEva" disabled>提交评价</button>
 	</div>
 </template>
 
@@ -19,6 +19,7 @@
 import XHeader from 'vux/src/components/x-header/index.vue'
 import Rater from 'vux/src/components/rater/index.vue'
 import XTextarea from 'vux/src/components/x-textarea/index.vue'
+
 
 export default{
 	components:{
@@ -30,19 +31,21 @@ export default{
 		return{
 			orderList:[],
 			score:0,
-			evaList:[]
+			evaList:[],
+			bizId:''
 		}
 	},
 	created(){
 		let jsonStr = window.sessionStorage.getItem('orderView');
 		let order = JSON.parse(jsonStr) || {};
 		console.log(order)
-		for(let ol of order.orderLists){
+		for(let ol of order.orderList){
 			ol.score = 0;
 			ol.eva = '';
 		}
-		this.orderList = order.orderLists;
-		console.log(this.orderList)
+		this.orderList = order.orderList;
+		this.bizId = order.id;
+		console.log(this.orderList);
 	},
 	methods:{
 		subEva(){
@@ -54,6 +57,7 @@ export default{
 				eva.quality = ol.score;
 				eva.service = ol.score;
 				eva.content = ol.eva;
+				eva.bizId = this.bizId;
 				evas.push(eva);
 			}
 			console.log(evas);
@@ -61,26 +65,7 @@ export default{
 			   text: '正在提交评价'
 			});
 			let _this = this;
-			this.$http.post(this.COM.urls.saveEvaluate,this.COM.postOpt).then(
-				function(res){
-					let rejo = res.body;
-					this.$vux.loading.hide();
-					this.$vux.alert.show({
-				        title: '提示',
-				        content: rejo.msg,
-				        onShow () {
-				        },
-				        onHide () {
-				          if(rejo.code > 0){
-				          	this.$router.push('/orderView')
-				          }
-				        }
-				    });
-				},
-				function(res){
-					this.COM.errorCallBack(res,this.$vux);
-				}
-			)
+			
 		}
 	}
 }
