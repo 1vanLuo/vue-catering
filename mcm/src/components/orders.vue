@@ -1,10 +1,9 @@
 <template>
 	<div>
 		<x-header :left-options="{backText: ''}" ref="hb">我的订单</x-header>
-		<Scroller lock-x  @on-scroll="onScroll" ref="orderListScroller" v-model="status" :pullup-config="pullUp" 
+		<Scroller height="-48" lock-x  @on-scroll="onScroll" ref="orderListScroller" v-model="status" :pullup-config="pullUp" 
 			@on-pullup-loading="pullupRefresh" :use-pullup=true @on-scroll-bottom="onScrollBottom">
 		  <div style="padding-bottom: 5px;">	
-		  	<div class="own-data_none" ref="dataTip">暂无数据</div>
 			<div v-for="(o,index) in orders" style="padding: 10px;background-color: #fff;margin-bottom: 10px;" @click="toView(o)">
 				<div class="own-order__feediv">
 					<div>
@@ -37,7 +36,6 @@
 import XHeader from 'vux/src/components/x-header/index.vue'
 import Scroller from 'vux/src/components/scroller/index.vue'
 
-import jQ from 'jquery'
 
 export default{
 	components: {
@@ -74,45 +72,53 @@ export default{
 	methods:{
 		pullupRefresh(){
 			let _this = this;
-			++_this.pageNo;
-			jQ.ajax({
-				url:_this.COM.urls.getOrderList,
-				data:{'pageNo':_this.pageNo},
-				type:'post',
-				success:function(res){
-					_this.$vux.loading.hide();
-					if(res.length > 0){
-						for(let i of res){
-							let d = _this.COM.formatDate(i.createDate);
-							i.createDate = d;
-							let logo = i.company.logo || '';
-							i.company.logo = _this.COM.imgHost + logo;
-							_this.orders.push(i);
-							//_this.productName.push(i.orderList[0].product.name);
-						}
-						console.log(_this.orders)
-						_this.$refs.dataTip.style.display = 'none';
-						_this.$nextTick(() => {
-							let sc = _this.$refs.orderListScroller
-							let hbHeight = _this.$refs.hb.$el.offsetHeight;
-							let scHeight = window.innerHeight - hbHeight - 5;
-							sc.$el.style.height = scHeight + 'px';
-							sc.reset();
-						});
-						_this.status.purllupStatus = 'default';
-					}else{
-						_this.$vux.toast.show({
-							type:'text',
-							text:'已经到底了',
-							position:'bottom'
-						})
-						_this.status.pullupStatus = 'disabled';
-					}
-				},
-				error:function(res){
-					_this.COM.errorCallBack(res,_this.$vux);
-				}
-			});
+            _this.$vux.loading.show({
+                text: '正在加载'
+            });
+            ++_this.pageNo;
+            setTimeout(function() {
+                _this.$vux.loading.hide();
+                for (let i = 1; i <= 10; i++) {
+					let o = {};
+					let c = {};
+					c.logo = 'http://ove4dmu8g.bkt.clouddn.com/dianpu.jpg';
+					c.name = '店铺';
+                    o.company = c;
+                    o.createDate = '2017-8-11 17:27:03';
+					o.statusName = '已支付';
+					o.fee = '116.00';
+					let olist = [];
+					let ol1 = {};
+					let p1 = {};
+					p1.name = '商品1';
+					ol1.product = p1;
+					ol1.rebate = '58';
+					ol1.num = '1';
+					olist.push(ol1);
+
+					let ol2 = {};
+					let p2 = {};
+					p2.name = '商品2';
+					ol2.product = p2;
+					ol2.rebate = '58';
+					ol2.num = '1';
+					olist.push(ol2);
+					o.orderList = olist;
+
+					let de = {};
+					de.name = '张三';
+					de.phone = '18088883333';
+					de.address = 'xxx省xxx市xxx区xxx街道xxxx';
+					o.deliveryAddress = de;
+
+                    _this.orders.push(o);
+                }
+                _this.$nextTick(() => {
+                    let sc = _this.$refs.orderListScroller;
+                    sc.reset();
+                });
+                _this.status.pullupStatus = 'enabled';
+            }, 1000);
 		},
 		onScrollBottom(){
 			if(this.status.pullupStatus == 'disabled'){
@@ -131,54 +137,8 @@ export default{
 			this.$router.push({path:'/orderView'});
 		},
 		toPay(item){
-			let _this = this;
-			_this.$vux.loading.show({text:'正在支付'});
-			jQ.ajax({
-				url:_this.COM.urls.cartsPayByVip,
-				data:{'orderId':item.id,'fee':item.vipPrice,'price':item.retailFee},
-				type:'post',
-				success:function(resp){
-					_this.$vux.loading.hide();
-					if(resp.code < 0){
-			  			let data = resp.data;
-			  			_this.$router.push({path:'/beforePayOrder',query:{'vipFee':data.vipFee,'price':data.price,'orderId':data.orderId}});
-			  		}else{
-			  			_this.$vux.alert.show({
-							content:res.msg,
-							onHide(){
-								if(resp.code > 0){
-									_this.$router.push('/orders');
-									window.sessionStorage.removeItem('cart');
-								}else if(resp.code == 0){
-									_this.$router.push('/loginCaptcha');
-								}
-							}
-						});
-			  		}
-				},
-				error:function(resp){
-					_this.COM.errorCallBack(resp,_this.$vux);
-				}
-			});
 		},
 		toCancel(item){
-			_this.$vux.loading.show({text:'正在取消订单'});
-			jQ.ajax({
-				url:_this.COM.urls.cancelOrder,
-				data:{'orderId':item.id},
-				type:'post',
-				success:function(resp){
-					_this.$vux.alert.show({
-						content:resp.msg,
-						onHide:function(){
-							_this.$router.push('/orders');
-						}
-					})
-				},
-				error:function(resp){
-					_this.COM.errorCallBack(resp,_this.$vux);
-				}
-			});
 		}
 	}
 }

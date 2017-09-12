@@ -1,59 +1,8 @@
-<<<<<<< HEAD
-//var host = 'http://192.168.0.109:8085/catering/a';
-//var host = 'http://192.168.0.8:8085/catering/a';
-var host = '/catering/a';
-var imgHost = 'http://124.232.137.107:6660';
-var testOpenId = 'oDgoQxIxHbRy0m0zYa4aSA1v6HxY';
-
-var urls = {};
-urls.banners = host + '/weixin/api/banners';
-urls.product = host + '/weixin/api/products';
-urls.group = host + '/weixin/api/productGroups';
-urls.productDetail = host + '/weixin/api/productDetail';
-urls.getWxSdk = host + '/weixin/api/wxSDK';
-urls.getOpenId = host + '/weixin/api/getOpenId';
-urls.login = host + '/login';
-urls.scanPay = host + '/weixin/api/scanPay';
-urls.scanCustomerOrder = host + '/weixin/scan/wxScan';
-urls.getCoupons = host + '/weixin/api/getCouponListAjax';
-urls.exchangeCoupon = host + '/weixin/api/couponAjaxIns';
-urls.getOrderList = host + '/weixin/api/getCustOrderListBySearch';
-urls.saveEvaluate = host + '/weixin/api/evaluate';
-urls.cartSave = host + '/weixin/api/cartInsert';
-urls.sendCaptcha = host + '/weixin/wxUser/mobileCode';
-urls.checkCaptcha = host + '/weixin/wxUser/checkMobileCode';
-urls.register = host + '/weixin/wxUser/registerSave';
-urls.getUser = host + '/weixin/wxUser/personMes';
-urls.getCarts = host + '/weixin/api/getCarts';
-urls.getVipCards = host + '/weixin/api/vipCardList';
-urls.updatePass = host + '/weixin/wxUser/updatePassword';
-urls.setGesture = host + '/weixin/wxUser/saveGesturePwd';
-urls.valiPhoe = host + '/weixin/wxUser/validPhone';
-urls.resetPwd = host + '/weixin/wxUser/resetPwd';
-urls.recharge = host + '/weixin/api/recharge';
-urls.getVipCombos = host + '/weixin/api/vipCardCombo';
-urls.saveOrder = host + '/weixin/api/orderInsert';
-urls.delCart = host + '/weixin/api/cartDelete';
-urls.cartsPayByWX = host + '/weixin/api/cartsPayByWX';
-urls.cartsPayByVip = host + '/weixin/api/cartsPayByVip';
-urls.getBusiness = host + '/weixin/api/getBusiness';
-urls.getBusinessList = host + '/weixin/api/getBusinesslist';
-urls.cancelOrder = host + '/weixin/api/cancelOrder';
-urls.getConsumes = host + '/weixin/api/getConsume';
-urls.getRecharge = host + '/weixin/api/getRecharge';
-urls.getConsumeOrder = host + '/weixin/api/getConsumeOrder';
-
-
-var postOpt = {
-	emulateJSON: true,
-}
-=======
 var domain = '';
 var host = '';
 var imgHost = '';
 
 var urls = {};
->>>>>>> 2017-9-12 14:52:57
 
 var cookie = {
     set:function(key,val,time){//设置cookie方法
