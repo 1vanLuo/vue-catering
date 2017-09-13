@@ -151,8 +151,7 @@ export default {
                     shop.desc = '店铺描述';
                     shop.sales = '999';
                     shop.dis = '1.45';
-                    //shop.img = 'http://ove4dmu8g.bkt.clouddn.com/dianpu.jpg?e=1504594844&token=nJe3NBBcYvy5mLdKmfnWMaS_qehE78Z2ela0bpSs:8xjAf6wd_aofNJxmPpcosMKaFg0=';
-                    shop.img = 'http://ove4dmu8g.bkt.clouddn.com/dianpu.jpg';
+                    shop.img = 'http://data.luo1fan.com/dianpu.jpg-style1';
                     _this.shops.push(shop);
                 }
                 _this.$nextTick(() => {

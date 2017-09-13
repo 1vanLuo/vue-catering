@@ -91,8 +91,7 @@
                         p.desc = '菜品描述';
                         p.sales = '888';
                         p.price = '58.00';
-                        //p.img = 'http://ove4dmu8g.bkt.clouddn.com/dish.png?e=1504596795&token=nJe3NBBcYvy5mLdKmfnWMaS_qehE78Z2ela0bpSs:ex5q6gU4AIte--xaZDeX2tTO-Mw=';
-                        p.img = 'http://ove4dmu8g.bkt.clouddn.com/dish.png';
+                        p.img = 'http://data.luo1fan.com/dish.png-style1';
                         p.isShow = false;
                         p.num = 0;
                         for(let c of _this.cart){
