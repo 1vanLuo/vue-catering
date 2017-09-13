@@ -3,7 +3,7 @@
         <popup v-model="showPop" height="100%" style="background-color:#fff" @on-first-show="resetScroller">
             <x-header height="-44" :left-options="{backText: '',preventGoBack:true}"
             @on-click-back="hideThis({})" ref="hb">选择收货地址</x-header>
-            <scroller lock-x @on-scroll="onScroll" ref="scroller">
+            <scroller height="-50" lock-x @on-scroll="onScroll" ref="scroller">
                 <div>
                     <group>
                         <cell v-for="d in deliveryAddressList" :title="d.nameAndPhone" :inline-desc="d.address" 

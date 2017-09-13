@@ -7,7 +7,7 @@
                     @keyup="searchCity()">
                     <span style="color:#fff;font-size:1rem;margin-left:5px" @click="hidePicker()">取消</span>
                 </div>
-                <scroller lock-x @on-scroll="onScroll" ref="cityScroller">
+                <scroller height="-50" lock-x @on-scroll="onScroll" ref="cityScroller">
                 <div>
                 <div v-show="isShowSearch">
                     <div v-for="city in this.searchCitys" style="width:100%;padding:7px 0;padding-left:4%;font-size:0.85rem;

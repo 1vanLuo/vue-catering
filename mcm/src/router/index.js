@@ -18,6 +18,7 @@ import DeliverAddress from '../components/deliverAddress.vue'
 import EditAddress from '../components/editAddress.vue'
 import FeedBack from '../components/feedBack.vue'
 import AccountBalance from '../components/accountBalance.vue'
+import ForgetPassword from '../components/forgetPassword.vue'
 
 Vue.use(Router)
 
@@ -113,6 +114,11 @@ export default new Router({
     	path:'/accountBalance',
     	name:'accountBalance',
     	component: AccountBalance
+    },
+    {
+    	path:'/forgetPassword',
+    	name:'forgetPassword',
+    	component: ForgetPassword
     }
   ]
 })
