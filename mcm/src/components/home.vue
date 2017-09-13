@@ -151,7 +151,7 @@ export default {
                     shop.desc = '店铺描述';
                     shop.sales = '999';
                     shop.dis = '1.45';
-                    shop.img = 'http://data.luo1fan.com/dianpu.jpg-style1';
+                    shop.img = 'http://data.luo1fan.com/dianpu.jpg-style';
                     _this.shops.push(shop);
                 }
                 _this.$nextTick(() => {

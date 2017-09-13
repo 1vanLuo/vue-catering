@@ -91,7 +91,7 @@
                         p.desc = '菜品描述';
                         p.sales = '888';
                         p.price = '58.00';
-                        p.img = 'http://data.luo1fan.com/dish.png-style1';
+                        p.img = 'http://data.luo1fan.com/dish.png-style';
                         p.isShow = false;
                         p.num = 0;
                         for(let c of _this.cart){
