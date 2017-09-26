@@ -30,7 +30,6 @@ export default{
 			  container: 'element', 
 			  outer: 'outer',
 			  inputEnd: function(psw){
-			  	console.log(psw)
 			  	lock.reset();
 			  	if(arr.length > 0){
 			  		if(psw == arr[0]){

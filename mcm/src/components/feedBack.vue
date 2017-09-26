@@ -65,7 +65,6 @@ export default{
         syncUpload(localIds){
         },
         clickImg(index,img){
-            console.log('clickImg');
             if(img.isClickAdd){
                 this.getImgs();
             }else{

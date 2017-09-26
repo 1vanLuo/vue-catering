@@ -110,8 +110,6 @@ var trimStr = function(str){return str.replace(/(^\s*)|(\s*$)/g,"");}
 
 var mergeCart = function(cart){
 	var _cart = [];
-	console.log('----cart----');
-	console.log(cart);
 	for(var  i=0; i<cart.length; i++){
 		var  item = cart[i];
 		var j = 0;

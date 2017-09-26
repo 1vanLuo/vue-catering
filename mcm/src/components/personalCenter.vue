@@ -68,7 +68,6 @@ export default{
 	created(){
 		let islogin = this.COM.cookie.get('isLogin') || false;
 		this.isLogined = islogin;
-		console.log(islogin)
 		if(islogin){
 			let _userName = this.COM.cookie.get('nickName');
 			this.userName = unescape(_userName);
@@ -83,7 +82,6 @@ export default{
 		}
 	},
 	mounted(){
-		console.log(this.isLogined)
 		if(this.isLogined){
 			let headImg = this.COM.cookie.get('headImg');
 			this.$refs.head.innerHTML = '<img src="'+unescape(headImg)+'" width="100%">';

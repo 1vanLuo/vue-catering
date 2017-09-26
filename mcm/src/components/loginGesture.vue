@@ -37,7 +37,6 @@ export default{
 			  container: 'element', 
 			  outer: 'outer',
 			  inputEnd: function(psw){
-			  	console.log(psw)
 			  	lock.reset();
 			  	_this.$vux.loading.show({
 				   text: '正在登陆'

@@ -123,7 +123,6 @@
                 }
             },
             cartSave(c){
-                console.log(c)
                 let _this = this;
                 let para = {};
                 let pr = {};
@@ -154,19 +153,14 @@
                 for(let i of _this.cart){
                     ct += i.num;
                 }
-                console.log('=====this.cart=======')
-                console.log(_this.cart);
                 sessionStorage.setItem('cart',JSON.stringify(_this.cart));
                 _this.countSum();
             },
             addToCart(item,f){
-                console.log(item);
                 let flag = false;
                 let _cart = this.cart;
-                console.log(_cart)
                 let _c = {};
                 for(let index=0; index<_cart.length; index++){
-                    console.log(index);
                     let c = _cart[index];
                     if(c.id === item.id){
                         c.num += f;
@@ -187,8 +181,6 @@
                     _c.vipPrice = item.vipPrice;
                     this.cart.push(_c);
                 }
-                console.log('=====this.cart=======')
-                console.log(this.cart);
                 sessionStorage.setItem('cart',JSON.stringify(this.cart));
                 this.countSum();
             },
@@ -203,10 +195,8 @@
                 });
             },
             onFocus () {
-                console.log('on focus')
             },
             onCancel () {
-                console.log('on cancel')
             },
             onScroll(pos) {
                 this.scrollTop = pos.top
@@ -256,8 +246,6 @@
 		   		let num = 0;
 		   		let fee = 0
 			   	for(let item of this.cart) {  
-			   		console.log('----item----')
-			   		console.log(item)
 	   				num += Number(item.num);
 	   				fee += Number(item.num*item.price);
 				}
@@ -271,7 +259,6 @@
             this.shop.push(shop);
 
             let carts = JSON.parse(window.sessionStorage.getItem('cart')) || []; 
-            console.log(carts)
             this.cart = carts;
             this.countSum();
 

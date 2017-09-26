@@ -55,7 +55,6 @@ export default {
     },
     watch:{
         show (val) {
-            console.log('!!!!!==='+val)
             this.showPop = val;
         }
     },

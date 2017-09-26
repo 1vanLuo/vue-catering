@@ -59,8 +59,6 @@ export default{
 			this.$http.post(this.COM.urls.sendCaptcha,{'mobile':this.phone},this.COM.postOpt).then(
 				function(res){
 					this.$vux.loading.hide();
-					console.log('------------------')
-					console.log(res)
 					let jo = res.body;
 					if(jo.code > 0){
 						this.$vux.toast.show({
@@ -107,7 +105,6 @@ export default{
 				});
 				this.$http.post(this.COM.urls.checkCaptcha,{'mcode':this.captcha,'mobile':this.phone},this.COM.postOpt).then(
 					function(res){
-						console.log(res)
 						let jo = res.body;
 						if(jo.code > 0){
 							this.$http.post(this.COM.urls.register,{'openid':this.openId,'account':this.phone,'register_type':1},this.COM.postOpt).then(

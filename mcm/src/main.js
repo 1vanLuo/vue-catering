@@ -32,7 +32,6 @@ new Vue({
 }).$mount('#app-box')
 
 router.beforeEach((to, from, next) => {
-	console.log(to.fullPath);
 	if(to.fullPath == '' || to.fullPath == '/'){
 		next('/home')
 	}else{

@@ -39,14 +39,12 @@ export default{
 	created(){
 		let jsonStr = window.sessionStorage.getItem('orderView');
 		let order = JSON.parse(jsonStr) || {};
-		console.log(order)
 		for(let ol of order.orderList){
 			ol.score = 0;
 			ol.eva = '';
 		}
 		this.orderList = order.orderList;
 		this.bizId = order.id;
-		console.log(this.orderList);
 	},
 	methods:{
 		subEva(){
@@ -61,7 +59,6 @@ export default{
 				eva.bizId = this.bizId;
 				evas.push(eva);
 			}
-			console.log(evas);
 			this.$vux.loading.show({
 			   text: '正在提交评价'
 			});
