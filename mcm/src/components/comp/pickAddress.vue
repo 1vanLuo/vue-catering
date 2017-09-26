@@ -128,7 +128,6 @@ export default {
     },
     watch:{
         show (val) {
-            console.log('!!!!!==='+val)
             this.showPop = val;
         }
     },
@@ -139,7 +138,6 @@ export default {
         this.geoCity.name = this.default;
         this.nowCity = this.geoCity.name;
         this.isShowDists = this.showDistrict;
-        console.log('!!!!!!!==='+this.show);
         if (typeof this.show !== 'undefined') {
             this.showPop = this.show
         }
@@ -153,8 +151,6 @@ export default {
             }
         } 
         this.initDists(this.geoCity.code);
-        console.log('==============')
-        console.log(this.geoCity);
     },
     mounted(){
     },
@@ -183,7 +179,6 @@ export default {
         showDistsComm(item){
             let code = item[5];
             this.nowCity = item[1];
-            console.log(code);
             this.initDists(code);
             //this.isShowDists = true;
             this.$refs.cityScroller.reset({top: 0});
@@ -225,7 +220,6 @@ export default {
             let val = this.search;
             this.searchCitys = [];
             if(this.COM.trimStr(val) != ''){
-                console.log(val);       
                 for(let c of this.CityData3.citys){
                     let cc = c.children;
                     for(let i of cc){
@@ -246,7 +240,6 @@ export default {
             if(JSON.stringify(item) == "{}"){
                 item = this.allArea;
             }
-            console.log(item)
             this.$emit("on-hide",item);
         }
     }

@@ -105,8 +105,6 @@ export default {
     watch: {
         geo(val) {
             let _this = this;
-            console.log('geo===')
-            console.log(val);
             window.sessionStorage.setItem('location', JSON.stringify(val));
             let point = new BMap.Point();
             point.lat = val.lat;
@@ -114,7 +112,6 @@ export default {
             let geoc = new BMap.Geocoder();
             geoc.getLocation(point, function(rs) {
                 let addComp = rs.addressComponents;
-                console.log(addComp);
                 let city = addComp.city;
                 _this.loc = city;
                 for (let c of _this.CityData3.citys) {
@@ -181,15 +178,12 @@ export default {
         },
         showAddrPicker() {
             this.isShow = true;
-            console.log(this.isShow)
         },
         hide(item) {
-            console.log(item);
             this.isShow = false;
             if (item != '' && item != 'undefined') {
                 this.loc = item.text;
                 this.areaCode = item.value;
-                console.log(item.value);
             } else {
             }
         },
@@ -204,7 +198,6 @@ export default {
                 if (this.getStatus() == BMAP_STATUS_SUCCESS) {
                     let bdLat = r.point.lat;
                     let bdLng = r.point.lng;
-                    console.log('您的位置：' + bdLng + ',' + bdLat);
                     _this.geo = r.point;
                     flag = true;
                 }

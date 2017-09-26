@@ -12,7 +12,6 @@ export default {
 		const router = this.$router;
 		let href = window.location.href;
 		let hrefArr = href.split('/');
-		console.log(hrefArr)
 		let uri = hrefArr[hrefArr.length - 1];
 		if (uri != "") {
 			router.push('/' + uri)
